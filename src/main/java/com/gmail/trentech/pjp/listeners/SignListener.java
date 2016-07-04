@@ -34,7 +34,7 @@ import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class SignListener {
 
@@ -99,13 +99,13 @@ public class SignListener {
 				Server teleportEvent = new TeleportEvent.Server(player, server, sign.getServer(), sign.getPrice(), Cause.of(NamedCause.source(sign)));
 
 				if (!Main.getGame().getEventManager().post(teleportEvent)) {
-					Spongee.API.connectPlayer(player, teleportEvent.getDestination());
+					SpongyCord.API.connectPlayer(player, teleportEvent.getDestination());
 
 					player.setLocation(player.getWorld().getSpawnLocation());
 				}
 			};
 
-			Spongee.API.getServerName(consumer, player);
+			SpongyCord.API.getServerName(consumer, player);
 		} else {
 			Optional<Location<World>> optionalSpawnLocation = sign.getDestination();
 

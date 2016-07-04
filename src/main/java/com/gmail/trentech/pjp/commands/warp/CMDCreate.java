@@ -22,7 +22,7 @@ import com.gmail.trentech.pjp.data.object.Warp;
 import com.gmail.trentech.pjp.utils.Help;
 import com.gmail.trentech.pjp.utils.Rotation;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class CMDCreate implements CommandExecutor {
 
@@ -100,10 +100,10 @@ public class CMDCreate implements CommandExecutor {
 						player.sendMessage(Text.of(TextColors.DARK_GREEN, "Warp ", name, " create"));
 					};
 
-					Spongee.API.getServerName(consumer2, player);
+					SpongyCord.API.getServerName(consumer2, player);
 				};
 
-				Spongee.API.getServerList(consumer1, player);
+				SpongyCord.API.getServerList(consumer1, player);
 
 				return CommandResult.success();
 			} else {

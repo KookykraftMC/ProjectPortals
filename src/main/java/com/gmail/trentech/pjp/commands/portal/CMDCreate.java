@@ -27,7 +27,7 @@ import com.gmail.trentech.pjp.listeners.PortalListener;
 import com.gmail.trentech.pjp.utils.Help;
 import com.gmail.trentech.pjp.utils.Rotation;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class CMDCreate implements CommandExecutor {
 
@@ -137,10 +137,10 @@ public class CMDCreate implements CommandExecutor {
 					player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 				};
 
-				Spongee.API.getServerName(consumer2, player);
+				SpongyCord.API.getServerName(consumer2, player);
 			};
 
-			Spongee.API.getServerList(consumer1, player);
+			SpongyCord.API.getServerList(consumer1, player);
 		} else {
 			if (!Main.getGame().getServer().getWorld(destination.get()).isPresent()) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, destination.get(), " is not loaded or does not exist"));

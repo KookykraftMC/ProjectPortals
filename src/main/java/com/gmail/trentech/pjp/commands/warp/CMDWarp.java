@@ -30,7 +30,7 @@ import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.utils.Help;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class CMDWarp implements CommandExecutor {
 
@@ -81,13 +81,13 @@ public class CMDWarp implements CommandExecutor {
 					Server teleportEvent = new TeleportEvent.Server(player.get(), server, warp.getServer(), warp.getPrice(), Cause.of(NamedCause.source(warp)));
 
 					if (!Main.getGame().getEventManager().post(teleportEvent)) {
-						Spongee.API.connectPlayer(player.get(), teleportEvent.getDestination());
+						SpongyCord.API.connectPlayer(player.get(), teleportEvent.getDestination());
 
 						player.get().setLocation(player.get().getWorld().getSpawnLocation());
 					}
 				};
 
-				Spongee.API.getServerName(consumer, player.get());
+				SpongyCord.API.getServerName(consumer, player.get());
 			} else {
 				Optional<Location<World>> optionalSpawnLocation = warp.getDestination();
 

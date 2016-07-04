@@ -36,7 +36,7 @@ import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 import ninja.leaping.configurate.ConfigurationNode;
 
 public class PortalListener {
@@ -225,7 +225,7 @@ public class PortalListener {
 				if (!Main.getGame().getEventManager().post(teleportEvent)) {
 					cache.add(uuid);
 
-					Spongee.API.connectPlayer(player, teleportEvent.getDestination());
+					SpongyCord.API.connectPlayer(player, teleportEvent.getDestination());
 
 					player.setLocation(player.getWorld().getSpawnLocation());
 
@@ -235,7 +235,7 @@ public class PortalListener {
 				}
 			};
 
-			Spongee.API.getServerName(consumer, player);
+			SpongyCord.API.getServerName(consumer, player);
 		} else {
 			Optional<Location<World>> optionalSpawnLocation = portal.getDestination();
 

@@ -18,7 +18,7 @@ import org.spongepowered.api.text.format.TextColors;
 import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.utils.Rotation;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class CMDObjBase implements CommandExecutor {
 
@@ -80,10 +80,10 @@ public class CMDObjBase implements CommandExecutor {
 					player.sendMessage(Text.of(TextColors.DARK_GREEN, "Place " + name + " to create " + name + " portal"));
 				};
 
-				Spongee.API.getServerName(consumer2, player);
+				SpongyCord.API.getServerName(consumer2, player);
 			};
 
-			Spongee.API.getServerList(consumer1, player);
+			SpongyCord.API.getServerList(consumer1, player);
 		} else {
 			if (!Main.getGame().getServer().getWorld(destination.get()).isPresent()) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, destination, " is not loaded or does not exist"));

@@ -34,7 +34,7 @@ import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class DoorListener {
 
@@ -144,7 +144,7 @@ public class DoorListener {
 				if (!Main.getGame().getEventManager().post(teleportEvent)) {
 					cache.add(uuid);
 
-					Spongee.API.connectPlayer(player, teleportEvent.getDestination());
+					SpongyCord.API.connectPlayer(player, teleportEvent.getDestination());
 
 					player.setLocation(player.getWorld().getSpawnLocation());
 
@@ -154,7 +154,7 @@ public class DoorListener {
 				}
 			};
 
-			Spongee.API.getServerName(consumer, player);
+			SpongyCord.API.getServerName(consumer, player);
 		} else {
 			Optional<Location<World>> optionalSpawnLocation = door.getDestination();
 
