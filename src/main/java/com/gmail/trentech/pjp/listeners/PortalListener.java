@@ -17,12 +17,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -34,7 +36,9 @@ import com.gmail.trentech.pjp.events.ConstructPortalEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
+import com.gmail.trentech.pjp.portal.PortalProperties;
 import com.gmail.trentech.pjp.utils.ConfigManager;
+import com.gmail.trentech.pjp.utils.PlayerDirection;
 
 import flavor.pie.spongycord.SpongyCord;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -42,7 +46,47 @@ import ninja.leaping.configurate.ConfigurationNode;
 public class PortalListener {
 
 	public static ConcurrentHashMap<UUID, PortalBuilder> builders = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<UUID, PortalProperties> props = new ConcurrentHashMap<>();
+	@Listener
+	public void onInteractBlockEvent(InteractBlockEvent.Secondary event, @First Player player) {
+		if (!props.containsKey(player.getUniqueId())) {
+			return;
+		}
+		PortalProperties properties = props.get(player.getUniqueId());
+		
+		if(player.getItemInHand().isPresent()) {
+			return;
+		}
+		
+		Optional<Location<World>> optionalLocation = event.getTargetBlock().getLocation();
+		
+		if(!optionalLocation.isPresent()) {
+			return;
+		}
+		Location<World> location = optionalLocation.get();
 
+		Direction direction = PlayerDirection.getClosest(player.getRotation().getFloorY()).getDirection();
+
+		if(direction.equals(Direction.NORTH) || direction.equals(Direction.SOUTH)) {
+			direction = Direction.EAST;
+		} else {
+			direction = Direction.NORTH;
+		}
+		
+		com.gmail.trentech.pjp.portal.PortalBuilder builder = new com.gmail.trentech.pjp.portal.PortalBuilder(location, direction);
+		
+		if(!builder.spawnPortal(properties)) {
+			player.sendMessage(Text.of(TextColors.DARK_RED, "Not a valid portal shape"));
+			return;
+		}
+		
+		Main.getGame().getScheduler().createTaskBuilder().delayTicks(20).execute(t -> {
+			props.remove(player.getUniqueId());
+		}).submit(Main.getPlugin());
+
+		player.sendMessage(Text.of(TextColors.DARK_GREEN, "Portal ", properties.getName(), " created successfully"));
+	}
+	
 	@Listener
 	public void onConstructPortalEvent(ConstructPortalEvent event, @First Player player) {
 		List<Location<World>> locations = event.getLocations();
