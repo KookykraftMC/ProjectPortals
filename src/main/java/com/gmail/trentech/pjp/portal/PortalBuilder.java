@@ -27,9 +27,13 @@ public class PortalBuilder {
 	private List<Location<World>> fillList = new ArrayList<>();
 
 	public PortalBuilder(Location<World> location, Direction direction) {
-		if(direction.equals(Direction.NORTH) || direction.equals(Direction.SOUTH)) {
+		if(direction.equals(Direction.NORTH)) {
 			direction = Direction.EAST;
-		} else {
+		} else if(direction.equals(Direction.EAST)) {
+			direction = Direction.SOUTH;
+		} else if(direction.equals(Direction.SOUTH)) {
+			direction = Direction.WEST;
+		} else if(direction.equals(Direction.WEST)) {
 			direction = Direction.NORTH;
 		}
 
@@ -38,22 +42,26 @@ public class PortalBuilder {
 		if(!isValid()) {
 			fillList.clear();
 			frameList.clear();
-			findPortal(location, direction, Direction.NORTH);
-		}
-		if(!isValid()) {
-			fillList.clear();
-			frameList.clear();
-			findPortal(location, direction, Direction.SOUTH);
-		}
-		if(!isValid()) {
-			fillList.clear();
-			frameList.clear();
-			findPortal(location, direction, Direction.EAST);
-		}
-		if(!isValid()) {
-			fillList.clear();
-			frameList.clear();
-			findPortal(location, direction, Direction.WEST);
+			
+			if(direction.equals(Direction.NORTH) || direction.equals(Direction.SOUTH)) {
+				findPortal(location, direction, Direction.EAST);
+				
+				if(!isValid()) {
+					fillList.clear();
+					frameList.clear();
+					
+					findPortal(location, direction, Direction.WEST);
+				}
+			}else {
+				findPortal(location, direction, Direction.NORTH);
+				
+				if(!isValid()) {
+					fillList.clear();
+					frameList.clear();
+					
+					findPortal(location, direction, Direction.SOUTH);
+				}
+			}
 		}
 	}
 
@@ -130,7 +138,10 @@ public class PortalBuilder {
 				break;
 			}
 
-			frameList.add(loc);
+			if(!frameList.contains(loc)) {
+				frameList.add(loc);
+			}
+			
 
 			if (!loc.getRelative(vertical).getBlock().getType().equals(BlockTypes.AIR)) {
 				break;
@@ -148,7 +159,9 @@ public class PortalBuilder {
 				break;
 			}
 
-			frameList.add(loc);
+			if(!frameList.contains(loc)) {
+				frameList.add(loc);
+			}
 
 			if (!loc.getRelative(vertical).getBlock().getType().equals(BlockTypes.AIR)) {
 				break;
@@ -165,7 +178,9 @@ public class PortalBuilder {
 			BlockState state = location.getBlock();
 
 			if (state.getType().equals(BlockTypes.AIR)) {
-				fillList.add(location);
+				if(!fillList.contains(location)) {
+					fillList.add(location);
+				}
 				if (first) {
 					if (location.getRelative(vertical.getOpposite()).getBlock().getType().equals(BlockTypes.AIR)) {
 						this.valid = false;
@@ -178,7 +193,9 @@ public class PortalBuilder {
 				location = location.getRelative(direction);
 			} else {
 				if (i != 1) {
-					frameList.add(location);
+					if(!frameList.contains(location)) {
+						frameList.add(location);
+					}
 					break;
 				} else {
 					return false;
