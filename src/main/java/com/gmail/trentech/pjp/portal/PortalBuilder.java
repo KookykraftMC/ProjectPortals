@@ -14,6 +14,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.gmail.trentech.pjp.Main;
+import com.gmail.trentech.pjp.data.object.Portal;
 import com.gmail.trentech.pjp.effects.Particle;
 import com.gmail.trentech.pjp.effects.ParticleColor;
 import com.gmail.trentech.pjp.effects.Particles;
@@ -22,63 +23,55 @@ import com.gmail.trentech.pjp.events.ConstructPortalEvent;
 public class PortalBuilder {
 
 	private boolean valid = false;
-	private boolean validTop = false;
 	private List<Location<World>> frameList = new ArrayList<>();
 	private List<Location<World>> fillList = new ArrayList<>();
 
 	public PortalBuilder(Location<World> location, Direction direction) {
-		frameList.add(location);
-
-		scanTopOrBottom(location, direction, false);
-
-		for (int i = 1; i < 50; ++i) {
-			location = location.getRelative(Direction.UP);
-			
-			if (!scanLine(location, direction, i == 1)) {
-				break;
-			}
+		if(direction.equals(Direction.NORTH) || direction.equals(Direction.SOUTH)) {
+			direction = Direction.EAST;
+		} else {
+			direction = Direction.NORTH;
 		}
 
-		if (validTop) {
-			scanTopOrBottom(location, direction, true);
+		findPortal(location, direction, Direction.UP);
+		
+		if(!isValid()) {
+			fillList.clear();
+			frameList.clear();
+			findPortal(location, direction, Direction.NORTH);
 		}
-		valid = validTop;
-
-		for (Location<World> loc : fillList) {
-			List<Location<World>> list = new ArrayList<>();
-
-			list.add(loc.getRelative(Direction.UP));
-			list.add(loc.getRelative(Direction.DOWN));
-			list.add(loc.getRelative(direction));
-			list.add(loc.getRelative(direction.getOpposite()));
-
-			for (Location<World> loc2 : list) {
-				BlockState state = loc2.getBlock();
-
-				if ((state.getType().equals(BlockTypes.AIR))) {
-					if (!fillList.contains(loc2)) {
-						valid = false;
-						break;
-					}
-				}
-			}
+		if(!isValid()) {
+			fillList.clear();
+			frameList.clear();
+			findPortal(location, direction, Direction.SOUTH);
+		}
+		if(!isValid()) {
+			fillList.clear();
+			frameList.clear();
+			findPortal(location, direction, Direction.EAST);
+		}
+		if(!isValid()) {
+			fillList.clear();
+			frameList.clear();
+			findPortal(location, direction, Direction.WEST);
 		}
 	}
 
-	public boolean spawnPortal(PortalProperties properties) {
-		if (valid) {
-			if (!Main.getGame().getEventManager().post(new ConstructPortalEvent(frameList, fillList, Cause.of(NamedCause.source(this))))) {
-				BlockState block = BlockTypes.AIR.getDefaultState();
+	public boolean isValid() {
+		return valid;
+	}
 
+	public boolean spawnPortal(PortalProperties properties) {
+		if (isValid()) {
+			if (!Main.getGame().getEventManager().post(new ConstructPortalEvent(frameList, fillList, Cause.of(NamedCause.source(this))))) {
 				Particle effect = Particles.getDefaultEffect("creation");
 				Optional<ParticleColor> effectColor = Particles.getDefaultColor("creation", properties.getParticle().isColorable());
 
 				for (Location<World> location : fillList) {
 					effect.spawnParticle(location, false, effectColor);
-					location.getExtent().setBlock(location.getBlockX(), location.getBlockY(), location.getBlockZ(), block, false, Cause.of(NamedCause.source(Main.getPlugin())));
 				}
 
-				new com.gmail.trentech.pjp.data.object.Portal(properties.getName(), properties.getDestination(), properties.getRotation(), frameList, fillList, properties.getParticle(), properties.getColor(), properties.getPrice(), properties.isBungee()).create();
+				new Portal(properties.getName(), properties.getDestination(), properties.getRotation(), frameList, fillList, properties.getParticle(), properties.getColor(), properties.getPrice(), properties.isBungee()).create();
 
 				return true;
 			}
@@ -86,12 +79,48 @@ public class PortalBuilder {
 
 		return false;
 	}
+	
+	private void findPortal(Location<World> location, Direction horizonal, Direction vertical) {
+		scanEdge(location, horizonal, vertical, false);
 
-	private void scanTopOrBottom(Location<World> location, Direction direction, boolean top) {
+		for (int i = 1; i < 50; ++i) {
+			location = location.getRelative(vertical);
+			
+			if (!scanLine(location, horizonal, vertical, i == 1)) {
+				break;
+			}
+		}
+
+		if (isValid()) {
+			scanEdge(location, horizonal, vertical, true);
+			
+			for (Location<World> loc : fillList) {
+				List<Location<World>> list = new ArrayList<>();
+
+				list.add(loc.getRelative(vertical));
+				list.add(loc.getRelative(vertical.getOpposite()));
+				list.add(loc.getRelative(horizonal));
+				list.add(loc.getRelative(horizonal.getOpposite()));
+
+				for (Location<World> loc2 : list) {
+					BlockState state = loc2.getBlock();
+
+					if ((state.getType().equals(BlockTypes.AIR))) {
+						if (!fillList.contains(loc2)) {
+							valid = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void scanEdge(Location<World> location, Direction direction, Direction vertical, boolean top) {
 		Location<World> loc = location;
-		Direction vertical = Direction.UP;
+
 		if (top) {
-			vertical = Direction.DOWN;
+			vertical = vertical.getOpposite();
 		}
 
 		for (int i = 1; i < 25; ++i) {
@@ -129,7 +158,7 @@ public class PortalBuilder {
 		}
 	}
 
-	private boolean scanDirection(Location<World> location, Direction direction, boolean first) {
+	private boolean scanDirection(Location<World> location, Direction direction, Direction vertical, boolean first) {
 		boolean valid = true;
 
 		for (int i = 1; i < 25; ++i) {
@@ -138,11 +167,11 @@ public class PortalBuilder {
 			if (state.getType().equals(BlockTypes.AIR)) {
 				fillList.add(location);
 				if (first) {
-					if (location.getRelative(Direction.DOWN).getBlock().getType().equals(BlockTypes.AIR)) {
-						validTop = false;
+					if (location.getRelative(vertical.getOpposite()).getBlock().getType().equals(BlockTypes.AIR)) {
+						this.valid = false;
 						return false;
 					}
-				} else if (location.getRelative(Direction.UP).getBlock().getType().equals(BlockTypes.AIR)) {
+				} else if (location.getRelative(vertical).getBlock().getType().equals(BlockTypes.AIR)) {
 					valid = false;
 				}
 
@@ -156,20 +185,20 @@ public class PortalBuilder {
 				}
 			}
 		}
-		validTop = valid;
+		this.valid = valid;
 		return true;
 	}
 
-	private boolean scanLine(Location<World> location, Direction direction, boolean first) {
-		if (scanDirection(location, direction.getOpposite(), first)) {
-			if (!validTop) {
-				if (scanDirection(location, direction, first)) {
-					validTop = false;
+	private boolean scanLine(Location<World> location, Direction direction, Direction vertical, boolean first) {
+		if (scanDirection(location, direction.getOpposite(), vertical, first)) {
+			if (!isValid()) {
+				if (scanDirection(location, direction, vertical, first)) {
+					valid = false;
 					return true;
 				}
-				validTop = false;
+				valid = false;
 			} else {
-				if (scanDirection(location, direction, first)) {
+				if (scanDirection(location, direction, vertical, first)) {
 					return true;
 				}
 			}

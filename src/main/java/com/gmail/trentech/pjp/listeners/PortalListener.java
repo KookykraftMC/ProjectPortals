@@ -22,6 +22,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Direction;
@@ -47,7 +48,9 @@ public class PortalListener {
 
 	public static ConcurrentHashMap<UUID, PortalBuilder> builders = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<UUID, PortalProperties> props = new ConcurrentHashMap<>();
+	
 	@Listener
+	@Exclude(value = { ChangeBlockEvent.Place.class })
 	public void onInteractBlockEvent(InteractBlockEvent.Secondary event, @First Player player) {
 		if (!props.containsKey(player.getUniqueId())) {
 			return;
@@ -55,6 +58,7 @@ public class PortalListener {
 		PortalProperties properties = props.get(player.getUniqueId());
 		
 		if(player.getItemInHand().isPresent()) {
+			player.sendMessage(Text.of(TextColors.YELLOW, "Hand must be empty"));
 			return;
 		}
 		
@@ -66,12 +70,6 @@ public class PortalListener {
 		Location<World> location = optionalLocation.get();
 
 		Direction direction = PlayerDirection.getClosest(player.getRotation().getFloorY()).getDirection();
-
-		if(direction.equals(Direction.NORTH) || direction.equals(Direction.SOUTH)) {
-			direction = Direction.EAST;
-		} else {
-			direction = Direction.NORTH;
-		}
 		
 		com.gmail.trentech.pjp.portal.PortalBuilder builder = new com.gmail.trentech.pjp.portal.PortalBuilder(location, direction);
 		
