@@ -108,7 +108,7 @@ public class TeleportListener {
 	public void onTeleportEventServer(TeleportEvent.Server event) {
 		Player player = event.getPlayer();
 
-		Optional<PluginContainer> optionalPlugin = Main.getGame().getPluginManager().getPlugin("spongee");
+		Optional<PluginContainer> optionalPlugin = Main.getGame().getPluginManager().getPlugin("spongycord");
 
 		if (!optionalPlugin.isPresent()) {
 			player.sendMessage(Text.of(TextColors.DARK_RED, "Bungee portals require Spongee plugin dependency"));
