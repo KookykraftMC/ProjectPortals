@@ -134,7 +134,13 @@ public class CMDCreate implements CommandExecutor {
 						return;
 					}
 
-					PortalListener.builders.put(player.getUniqueId(), new PortalBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
+					if(new ConfigManager().getConfig().getNode("options", "portal", "legacy_builder").getBoolean()) {
+						PortalListener.builders.put(player.getUniqueId(), new PortalBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
+						player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
+					} else {
+						PortalListener.props.put(player.getUniqueId(), new PortalProperties(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
+						player.sendMessage(Text.of(TextColors.DARK_GREEN, "Right click bottom with empty hand similar to vanilla nether portals "));
+					}
 
 					player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 				};
