@@ -188,7 +188,7 @@ public class CMDCreate implements CommandExecutor {
 				rotation.set(optionalRotation.get());
 			}
 			
-			if(new ConfigManager().getConfig().getNode("options", "portal", "legacy").getBoolean()) {
+			if(new ConfigManager().getConfig().getNode("options", "portal", "legacy_builder").getBoolean()) {
 				PortalListener.builders.put(player.getUniqueId(), new PortalBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
 				player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 			} else {
