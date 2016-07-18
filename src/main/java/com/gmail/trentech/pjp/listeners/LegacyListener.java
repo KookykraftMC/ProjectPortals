@@ -13,18 +13,17 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.data.object.Portal;
 import com.gmail.trentech.pjp.portal.LegacyBuilder;
-import com.gmail.trentech.pjp.timings.LegacyTimings;
 
 public class LegacyListener {
 
 	public static ConcurrentHashMap<UUID, LegacyBuilder> builders = new ConcurrentHashMap<>();
-	private LegacyTimings timings;
-	
-	public LegacyListener(Main plugin) {
-		this.timings = new LegacyTimings(plugin);
+
+	private Timings timings;
+
+	public LegacyListener(Timings timings) {
+		this.timings = timings;
 	}
 	
 	@Listener

@@ -30,7 +30,6 @@ import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
-import com.gmail.trentech.pjp.timings.PlateTimings;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
 import flavor.pie.spongycord.SpongyCord;
@@ -38,10 +37,11 @@ import flavor.pie.spongycord.SpongyCord;
 public class PlateListener {
 
 	public static ConcurrentHashMap<UUID, Plate> builders = new ConcurrentHashMap<>();
-	private PlateTimings timings;
-	
-	public PlateListener(Main plugin) {
-		this.timings = new PlateTimings(plugin);
+
+	private Timings timings;
+
+	public PlateListener(Timings timings) {
+		this.timings = timings;
 	}
 	
 	@Listener

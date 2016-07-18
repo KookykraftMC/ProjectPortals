@@ -32,7 +32,6 @@ import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
-import com.gmail.trentech.pjp.timings.SignTimings;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
 import flavor.pie.spongycord.SpongyCord;
@@ -40,10 +39,11 @@ import flavor.pie.spongycord.SpongyCord;
 public class SignListener {
 
 	public static ConcurrentHashMap<UUID, SignPortalData> builders = new ConcurrentHashMap<>();
-	private SignTimings timings;
-	
-	public SignListener(Main plugin) {
-		this.timings = new SignTimings(plugin);
+
+	private Timings timings;
+
+	public SignListener(Timings timings) {
+		this.timings = timings;
 	}
 	
 	@Listener

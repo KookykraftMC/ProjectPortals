@@ -42,6 +42,7 @@ import com.gmail.trentech.pjp.listeners.PlateListener;
 import com.gmail.trentech.pjp.listeners.PortalListener;
 import com.gmail.trentech.pjp.listeners.SignListener;
 import com.gmail.trentech.pjp.listeners.TeleportListener;
+import com.gmail.trentech.pjp.listeners.Timings;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.Resource;
 import com.gmail.trentech.pjp.utils.SQLUtils;
@@ -80,12 +81,14 @@ public class Main {
 
 		ConfigurationNode modules = configManager.getConfig().getNode("settings", "modules");
 
+		Timings timings = new Timings();
+		
 		if (modules.getNode("portals").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Portal.class, new PortalBuilder());
-			getGame().getEventManager().registerListeners(this, new PortalListener(this));
+			getGame().getEventManager().registerListeners(this, new PortalListener(timings));
 
 			if (isLegacy()) {
-				getGame().getEventManager().registerListeners(this, new LegacyListener(this));
+				getGame().getEventManager().registerListeners(this, new LegacyListener(timings));
 			}
 
 			getGame().getCommandManager().register(this, new CommandManager().cmdPortal, "portal", "p");
@@ -93,31 +96,31 @@ public class Main {
 		}
 		if (modules.getNode("buttons").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Button.class, new ButtonBuilder());
-			getGame().getEventManager().registerListeners(this, new ButtonListener(this));
+			getGame().getEventManager().registerListeners(this, new ButtonListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdButton, "button", "b");
 			getLog().info("Button module activated");
 		}
 		if (modules.getNode("doors").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Door.class, new DoorBuilder());
-			getGame().getEventManager().registerListeners(this, new DoorListener(this));
+			getGame().getEventManager().registerListeners(this, new DoorListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdDoor, "door", "d");
 			getLog().info("Door module activated");
 		}
 		if (modules.getNode("plates").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Plate.class, new PlateBuilder());
-			getGame().getEventManager().registerListeners(this, new PlateListener(this));
+			getGame().getEventManager().registerListeners(this, new PlateListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdPlate, "plate", "pp");
 			getLog().info("Pressure plate module activated");
 		}
 		if (modules.getNode("signs").getBoolean()) {
 			getGame().getDataManager().register(SignPortalData.class, ImmutableSignPortalData.class, new SignPortalDataManipulatorBuilder());
 			getGame().getDataManager().registerBuilder(Sign.class, new SignBuilder());
-			getGame().getEventManager().registerListeners(this, new SignListener(this));
+			getGame().getEventManager().registerListeners(this, new SignListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdSign, "sign", "s");
 			getLog().info("Sign module activated");
 		}
 		if (modules.getNode("levers").getBoolean()) {
-			getGame().getEventManager().registerListeners(this, new LeverListener(this));
+			getGame().getEventManager().registerListeners(this, new LeverListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdLever, "lever", "l");
 			getLog().info("Lever module activated");
 		}
@@ -129,7 +132,7 @@ public class Main {
 		}
 		if (modules.getNode("warps").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Warp.class, new WarpBuilder());
-			getGame().getEventManager().registerListeners(this, new SignListener(this));
+			getGame().getEventManager().registerListeners(this, new SignListener(timings));
 			getGame().getCommandManager().register(this, new CommandManager().cmdWarp, "warp", "w");
 			getLog().info("Warp module activated");
 		}

@@ -35,7 +35,6 @@ import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.portal.PortalProperties;
-import com.gmail.trentech.pjp.timings.PortalTimings;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.PlayerDirection;
 
@@ -45,16 +44,17 @@ import ninja.leaping.configurate.ConfigurationNode;
 public class PortalListener {
 
 	public static ConcurrentHashMap<UUID, PortalProperties> props = new ConcurrentHashMap<>();
-	private PortalTimings timings;
-	
-	public PortalListener(Main plugin) {
-		this.timings = new PortalTimings(plugin);
+
+	private Timings timings;
+
+	public PortalListener(Timings timings) {
+		this.timings = timings;
 	}
 	
 	@Listener
 	@Exclude(value = { ChangeBlockEvent.Place.class })
-	public void onInteractBlockEvent(InteractBlockEvent.Secondary event, @First Player player) {
-		timings.onInteractBlockEvent().startTimingIfSync();
+	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
+		timings.onInteractBlockEventSecondary().startTimingIfSync();
 		
 		try {
 			if (!props.containsKey(player.getUniqueId())) {
@@ -89,7 +89,7 @@ public class PortalListener {
 
 			player.sendMessage(Text.of(TextColors.DARK_GREEN, "Portal ", properties.getName(), " created successfully"));
 		} finally {
-			timings.onInteractBlockEvent().stopTimingIfSync();
+			timings.onInteractBlockEventSecondary().stopTimingIfSync();
 		}
 	}
 	
