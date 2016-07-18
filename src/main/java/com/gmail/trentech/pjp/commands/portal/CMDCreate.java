@@ -19,12 +19,12 @@ import org.spongepowered.api.text.format.TextStyles;
 
 import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.data.object.Portal;
-import com.gmail.trentech.pjp.data.object.PortalBuilder;
 import com.gmail.trentech.pjp.effects.Particle;
 import com.gmail.trentech.pjp.effects.ParticleColor;
 import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.listeners.LegacyListener;
 import com.gmail.trentech.pjp.listeners.PortalListener;
+import com.gmail.trentech.pjp.portal.LegacyBuilder;
 import com.gmail.trentech.pjp.portal.PortalProperties;
 import com.gmail.trentech.pjp.utils.Help;
 import com.gmail.trentech.pjp.utils.Rotation;
@@ -135,7 +135,7 @@ public class CMDCreate implements CommandExecutor {
 					}
 
 					if(Main.isLegacy()) {
-						LegacyListener.builders.put(player.getUniqueId(), new PortalBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
+						LegacyListener.builders.put(player.getUniqueId(), new LegacyBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
 						player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 					} else {
 						PortalListener.props.put(player.getUniqueId(), new PortalProperties(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
@@ -195,7 +195,7 @@ public class CMDCreate implements CommandExecutor {
 			}
 			
 			if(Main.isLegacy()) {
-				LegacyListener.builders.put(player.getUniqueId(), new PortalBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
+				LegacyListener.builders.put(player.getUniqueId(), new LegacyBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
 				player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 			} else {
 				PortalListener.props.put(player.getUniqueId(), new PortalProperties(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));

@@ -12,8 +12,8 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
 import com.gmail.trentech.pjp.Main;
-import com.gmail.trentech.pjp.data.object.PortalBuilder;
 import com.gmail.trentech.pjp.listeners.LegacyListener;
+import com.gmail.trentech.pjp.portal.LegacyBuilder;
 import com.gmail.trentech.pjp.utils.Help;
 
 public class CMDSave implements CommandExecutor {
@@ -36,7 +36,7 @@ public class CMDSave implements CommandExecutor {
 			player.sendMessage(Text.of(TextColors.DARK_GREEN, "Not in build mode"));
 			return CommandResult.empty();
 		}
-		PortalBuilder builder = LegacyListener.builders.get(player.getUniqueId());
+		LegacyBuilder builder = LegacyListener.builders.get(player.getUniqueId());
 
 		if (!builder.isFill()) {
 			builder.setFill(true);

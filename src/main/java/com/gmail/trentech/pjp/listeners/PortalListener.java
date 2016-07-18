@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.Living;
@@ -27,13 +29,13 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.gmail.trentech.pjp.Main;
-import com.gmail.trentech.pjp.Timings;
 import com.gmail.trentech.pjp.data.object.Portal;
 import com.gmail.trentech.pjp.events.ConstructPortalEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.portal.PortalProperties;
+import com.gmail.trentech.pjp.timings.PortalTimings;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.PlayerDirection;
 
@@ -43,10 +45,10 @@ import ninja.leaping.configurate.ConfigurationNode;
 public class PortalListener {
 
 	public static ConcurrentHashMap<UUID, PortalProperties> props = new ConcurrentHashMap<>();
-	private Timings timings;
+	private PortalTimings timings;
 	
 	public PortalListener(Main plugin) {
-		this.timings = new Timings(plugin);
+		this.timings = new PortalTimings(plugin);
 	}
 	
 	@Listener
@@ -291,6 +293,46 @@ public class PortalListener {
 			}
 		} finally {
 			timings.onDisplaceEntityEventMovePlayer().stopTimingIfSync();
+		}
+	}
+	
+	@Listener
+	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
+		timings.onChangeBlockEventPlace().startTimingIfSync();
+		
+		try {
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				Location<World> location = transaction.getFinal().getLocation().get();
+
+				if (!Portal.get(location).isPresent()) {
+					continue;
+				}
+
+				event.setCancelled(true);
+				break;
+			}
+		} finally {
+			timings.onChangeBlockEventPlace().stopTimingIfSync();
+		}
+	}
+
+	@Listener
+	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
+		timings.onChangeBlockEventBreak().startTimingIfSync();
+		
+		try {
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				Location<World> location = transaction.getFinal().getLocation().get();
+
+				if (!Portal.get(location).isPresent()) {
+					continue;
+				}
+
+				event.setCancelled(true);
+				break;
+			}
+		} finally {
+			timings.onChangeBlockEventBreak().stopTimingIfSync();
 		}
 	}
 }

@@ -140,8 +140,7 @@ public class PortalBuilder {
 
 			if(!frameList.contains(loc)) {
 				frameList.add(loc);
-			}
-			
+			}			
 
 			if (!loc.getRelative(vertical).getBlock().getType().equals(BlockTypes.AIR)) {
 				break;

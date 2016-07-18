@@ -1,4 +1,4 @@
-package com.gmail.trentech.pjp.data.object;
+package com.gmail.trentech.pjp.portal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,14 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.gmail.trentech.pjp.Main;
+import com.gmail.trentech.pjp.data.object.Portal;
 import com.gmail.trentech.pjp.effects.Particle;
 import com.gmail.trentech.pjp.effects.ParticleColor;
 import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.ConstructPortalEvent;
 import com.gmail.trentech.pjp.utils.Rotation;
 
-public class PortalBuilder {
+public class LegacyBuilder {
 
 	private final String name;
 	private final String destination;
@@ -31,7 +32,7 @@ public class PortalBuilder {
 	private List<Location<World>> regionFrame;
 	private List<Location<World>> regionFill;
 
-	public PortalBuilder(String name, String destination, Rotation rotation, Particle particle, Optional<ParticleColor> color, double price, boolean bungee) {
+	public LegacyBuilder(String name, String destination, Rotation rotation, Particle particle, Optional<ParticleColor> color, double price, boolean bungee) {
 		this.name = name;
 		this.destination = destination;
 		this.rotation = rotation;
@@ -55,22 +56,22 @@ public class PortalBuilder {
 		return name;
 	}
 
-	public PortalBuilder addFrame(Location<World> location) {
+	public LegacyBuilder addFrame(Location<World> location) {
 		regionFrame.add(location);
 		return this;
 	}
 
-	public PortalBuilder removeFrame(Location<World> location) {
+	public LegacyBuilder removeFrame(Location<World> location) {
 		regionFrame.remove(location);
 		return this;
 	}
 
-	public PortalBuilder addFill(Location<World> location) {
+	public LegacyBuilder addFill(Location<World> location) {
 		regionFill.add(location);
 		return this;
 	}
 
-	public PortalBuilder removeFill(Location<World> location) {
+	public LegacyBuilder removeFill(Location<World> location) {
 		regionFill.remove(location);
 		return this;
 	}
@@ -79,7 +80,7 @@ public class PortalBuilder {
 		return fill;
 	}
 
-	public PortalBuilder setFill(boolean fill) {
+	public LegacyBuilder setFill(boolean fill) {
 		this.fill = fill;
 		return this;
 	}

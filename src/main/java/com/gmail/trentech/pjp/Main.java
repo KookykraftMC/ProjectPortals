@@ -85,7 +85,7 @@ public class Main {
 			getGame().getEventManager().registerListeners(this, new PortalListener(this));
 
 			if (isLegacy()) {
-				getGame().getEventManager().registerListeners(this, new LegacyListener());
+				getGame().getEventManager().registerListeners(this, new LegacyListener(this));
 			}
 
 			getGame().getCommandManager().register(this, new CommandManager().cmdPortal, "portal", "p");
@@ -93,31 +93,31 @@ public class Main {
 		}
 		if (modules.getNode("buttons").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Button.class, new ButtonBuilder());
-			getGame().getEventManager().registerListeners(this, new ButtonListener());
+			getGame().getEventManager().registerListeners(this, new ButtonListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdButton, "button", "b");
 			getLog().info("Button module activated");
 		}
 		if (modules.getNode("doors").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Door.class, new DoorBuilder());
-			getGame().getEventManager().registerListeners(this, new DoorListener());
+			getGame().getEventManager().registerListeners(this, new DoorListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdDoor, "door", "d");
 			getLog().info("Door module activated");
 		}
 		if (modules.getNode("plates").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Plate.class, new PlateBuilder());
-			getGame().getEventManager().registerListeners(this, new PlateListener());
+			getGame().getEventManager().registerListeners(this, new PlateListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdPlate, "plate", "pp");
 			getLog().info("Pressure plate module activated");
 		}
 		if (modules.getNode("signs").getBoolean()) {
 			getGame().getDataManager().register(SignPortalData.class, ImmutableSignPortalData.class, new SignPortalDataManipulatorBuilder());
 			getGame().getDataManager().registerBuilder(Sign.class, new SignBuilder());
-			getGame().getEventManager().registerListeners(this, new SignListener());
+			getGame().getEventManager().registerListeners(this, new SignListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdSign, "sign", "s");
 			getLog().info("Sign module activated");
 		}
 		if (modules.getNode("levers").getBoolean()) {
-			getGame().getEventManager().registerListeners(this, new LeverListener());
+			getGame().getEventManager().registerListeners(this, new LeverListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdLever, "lever", "l");
 			getLog().info("Lever module activated");
 		}
@@ -129,7 +129,7 @@ public class Main {
 		}
 		if (modules.getNode("warps").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Warp.class, new WarpBuilder());
-			getGame().getEventManager().registerListeners(this, new SignListener());
+			getGame().getEventManager().registerListeners(this, new SignListener(this));
 			getGame().getCommandManager().register(this, new CommandManager().cmdWarp, "warp", "w");
 			getLog().info("Warp module activated");
 		}

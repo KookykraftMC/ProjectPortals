@@ -13,70 +13,89 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.data.object.Portal;
-import com.gmail.trentech.pjp.data.object.PortalBuilder;
+import com.gmail.trentech.pjp.portal.LegacyBuilder;
+import com.gmail.trentech.pjp.timings.LegacyTimings;
 
 public class LegacyListener {
 
-	public static ConcurrentHashMap<UUID, PortalBuilder> builders = new ConcurrentHashMap<>();
-
+	public static ConcurrentHashMap<UUID, LegacyBuilder> builders = new ConcurrentHashMap<>();
+	private LegacyTimings timings;
+	
+	public LegacyListener(Main plugin) {
+		this.timings = new LegacyTimings(plugin);
+	}
+	
 	@Listener
-	public void onChangeBlockEvent(ChangeBlockEvent.Place event, @First Player player) {
-		if (!builders.containsKey(player.getUniqueId())) {
-			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-				Location<World> location = transaction.getFinal().getLocation().get();
+	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
+		timings.onChangeBlockEventPlace().startTimingIfSync();
+		
+		try {
+			if (!builders.containsKey(player.getUniqueId())) {
+				for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+					Location<World> location = transaction.getFinal().getLocation().get();
 
-				if (!Portal.get(location).isPresent()) {
-					continue;
+					if (!Portal.get(location).isPresent()) {
+						continue;
+					}
+
+					event.setCancelled(true);
+					break;
+				}
+				return;
+			}
+			LegacyBuilder builder = builders.get(player.getUniqueId());
+
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				if (transaction.getFinal().getState().getType().equals(BlockTypes.FIRE)) {
+					event.setCancelled(true);
+					break;
 				}
 
-				event.setCancelled(true);
-				break;
-			}
-			return;
-		}
-		PortalBuilder builder = builders.get(player.getUniqueId());
+				Location<World> location = transaction.getFinal().getLocation().get();
 
-		for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-			if (transaction.getFinal().getState().getType().equals(BlockTypes.FIRE)) {
-				event.setCancelled(true);
-				break;
+				if (builder.isFill()) {
+					builder.addFill(location);
+				} else {
+					builder.addFrame(location);
+				}
 			}
-
-			Location<World> location = transaction.getFinal().getLocation().get();
-
-			if (builder.isFill()) {
-				builder.addFill(location);
-			} else {
-				builder.addFrame(location);
-			}
+		} finally {
+			timings.onChangeBlockEventPlace().stopTimingIfSync();
 		}
 	}
 
 	@Listener
-	public void onChangeBlockEvent(ChangeBlockEvent.Break event, @First Player player) {
-		if (!builders.containsKey(player.getUniqueId())) {
+	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
+		timings.onChangeBlockEventBreak().startTimingIfSync();
+		
+		try {
+			if (!builders.containsKey(player.getUniqueId())) {
+				for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+					Location<World> location = transaction.getFinal().getLocation().get();
+
+					if (!Portal.get(location).isPresent()) {
+						continue;
+					}
+
+					event.setCancelled(true);
+					break;
+				}
+				return;
+			}
+			LegacyBuilder builder = builders.get(player.getUniqueId());
+
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();
-
-				if (!Portal.get(location).isPresent()) {
-					continue;
+				if (builder.isFill()) {
+					builder.removeFill(location);
+				} else {
+					builder.removeFrame(location);
 				}
-
-				event.setCancelled(true);
-				break;
 			}
-			return;
-		}
-		PortalBuilder builder = builders.get(player.getUniqueId());
-
-		for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-			Location<World> location = transaction.getFinal().getLocation().get();
-			if (builder.isFill()) {
-				builder.removeFill(location);
-			} else {
-				builder.removeFrame(location);
-			}
+		} finally {
+			timings.onChangeBlockEventBreak().stopTimingIfSync();
 		}
 	}
 }
