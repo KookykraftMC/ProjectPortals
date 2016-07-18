@@ -36,6 +36,7 @@ import com.gmail.trentech.pjp.data.object.Sign;
 import com.gmail.trentech.pjp.data.object.Warp;
 import com.gmail.trentech.pjp.listeners.ButtonListener;
 import com.gmail.trentech.pjp.listeners.DoorListener;
+import com.gmail.trentech.pjp.listeners.LegacyListener;
 import com.gmail.trentech.pjp.listeners.LeverListener;
 import com.gmail.trentech.pjp.listeners.PlateListener;
 import com.gmail.trentech.pjp.listeners.PortalListener;
@@ -55,6 +56,8 @@ public class Main {
 	private static Game game;
 	private static Logger log;
 	private static PluginContainer plugin;
+	private static boolean legacy;
+	
 
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event) {
@@ -68,6 +71,8 @@ public class Main {
 		ConfigManager configManager = new ConfigManager();
 		configManager.init();
 
+		legacy = configManager.getConfig().getNode("options", "portal", "legacy_builder").getBoolean();
+
 		getGame().getEventManager().registerListeners(this, new TeleportListener());
 
 		getGame().getCommandManager().register(this, new CMDBack().cmdBack, "back");
@@ -77,7 +82,12 @@ public class Main {
 
 		if (modules.getNode("portals").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Portal.class, new PortalBuilder());
-			getGame().getEventManager().registerListeners(this, new PortalListener());
+			getGame().getEventManager().registerListeners(this, new PortalListener(this));
+
+			if (isLegacy()) {
+				getGame().getEventManager().registerListeners(this, new LegacyListener());
+			}
+
 			getGame().getCommandManager().register(this, new CommandManager().cmdPortal, "portal", "p");
 			getLog().info("Portal module activated");
 		}
@@ -161,5 +171,9 @@ public class Main {
 
 	public static PluginContainer getPlugin() {
 		return plugin;
+	}
+
+	public static boolean isLegacy() {
+		return legacy;
 	}
 }
