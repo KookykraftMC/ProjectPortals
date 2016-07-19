@@ -46,7 +46,7 @@ public class ButtonListener {
 	
 	@Listener
 	public void onChangeBlockEventModify(ChangeBlockEvent.Modify event, @First Player player) {
-		timings.onChangeBlockEventModify().startTimingIfSync();
+		timings.onChangeBlockEventModify().startTiming();
 		
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
@@ -123,13 +123,13 @@ public class ButtonListener {
 				}
 			}
 		} finally {
-			timings.onChangeBlockEventModify().stopTimingIfSync();
+			timings.onChangeBlockEventModify().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
-		timings.onChangeBlockEventBreak().startTimingIfSync();
+		timings.onChangeBlockEventBreak().startTiming();
 		
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
@@ -152,13 +152,13 @@ public class ButtonListener {
 				}
 			}
 		} finally {
-			timings.onChangeBlockEventBreak().stopTimingIfSync();
+			timings.onChangeBlockEventBreak().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
-		timings.onChangeBlockEventPlace().startTimingIfSync();
+		timings.onChangeBlockEventPlace().startTiming();
 		
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
@@ -192,7 +192,7 @@ public class ButtonListener {
 				builders.remove(player.getUniqueId());
 			}
 		} finally {
-			timings.onChangeBlockEventPlace().stopTimingIfSync();
+			timings.onChangeBlockEventPlace().stopTiming();
 		}
 	}
 }

@@ -48,7 +48,7 @@ public class SignListener {
 	
 	@Listener
 	public void onChangeSignEvent(ChangeSignEvent event, @First Player player) {
-		timings.onChangeSignEvent().startTimingIfSync();
+		timings.onChangeSignEvent().startTiming();
 		
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
@@ -71,13 +71,13 @@ public class SignListener {
 
 			builders.remove(player.getUniqueId());
 		} finally {
-			timings.onChangeSignEvent().stopTimingIfSync();
+			timings.onChangeSignEvent().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
-		timings.onChangeSignEvent().startTimingIfSync();
+		timings.onChangeSignEvent().startTiming();
 		
 		try {
 			BlockSnapshot snapshot = event.getTargetBlock();
@@ -141,13 +141,13 @@ public class SignListener {
 				}
 			}
 		} finally {
-			timings.onChangeSignEvent().stopTimingIfSync();
+			timings.onChangeSignEvent().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
-		timings.onChangeBlockEventBreak().startTimingIfSync();
+		timings.onChangeBlockEventBreak().startTiming();
 		
 		try {
 			for (Transaction<BlockSnapshot> blockTransaction : event.getTransactions()) {
@@ -173,7 +173,7 @@ public class SignListener {
 				}
 			}
 		} finally {
-			timings.onChangeBlockEventBreak().stopTimingIfSync();
+			timings.onChangeBlockEventBreak().stopTiming();
 		}
 	}
 }

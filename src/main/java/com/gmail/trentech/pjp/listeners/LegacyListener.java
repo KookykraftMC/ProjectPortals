@@ -28,7 +28,7 @@ public class LegacyListener {
 	
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
-		timings.onChangeBlockEventPlace().startTimingIfSync();
+		timings.onChangeBlockEventPlace().startTiming();
 		
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
@@ -61,13 +61,13 @@ public class LegacyListener {
 				}
 			}
 		} finally {
-			timings.onChangeBlockEventPlace().stopTimingIfSync();
+			timings.onChangeBlockEventPlace().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
-		timings.onChangeBlockEventBreak().startTimingIfSync();
+		timings.onChangeBlockEventBreak().startTiming();
 		
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
@@ -94,7 +94,7 @@ public class LegacyListener {
 				}
 			}
 		} finally {
-			timings.onChangeBlockEventBreak().stopTimingIfSync();
+			timings.onChangeBlockEventBreak().stopTiming();
 		}
 	}
 }

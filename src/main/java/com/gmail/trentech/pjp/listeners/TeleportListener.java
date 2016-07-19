@@ -39,109 +39,145 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 public class TeleportListener {
 
+	private Timings timings;
+
+	public TeleportListener(Timings timings) {
+		this.timings = timings;
+	}
+	
 	@Listener
 	public void onTeleportEvent(TeleportEvent event) {
-		Player player = event.getPlayer();
+		timings.onTeleportEvent().startTiming();
+		
+		try {
+			Player player = event.getPlayer();
 
-		Location<World> src = player.getLocation();
+			Location<World> src = player.getLocation();
 
-		double price = event.getPrice();
+			double price = event.getPrice();
 
-		Optional<EconomyService> optionalEconomy = Main.getGame().getServiceManager().provide(EconomyService.class);
+			Optional<EconomyService> optionalEconomy = Main.getGame().getServiceManager().provide(EconomyService.class);
 
-		if (price != 0 && optionalEconomy.isPresent()) {
-			EconomyService economy = optionalEconomy.get();
+			if (price != 0 && optionalEconomy.isPresent()) {
+				EconomyService economy = optionalEconomy.get();
 
-			UniqueAccount account = economy.getOrCreateAccount(player.getUniqueId()).get();
+				UniqueAccount account = economy.getOrCreateAccount(player.getUniqueId()).get();
 
-			if (account.withdraw(economy.getDefaultCurrency(), new BigDecimal(price), Cause.of(NamedCause.source(Main.getPlugin()))).getResult() != ResultType.SUCCESS) {
-				player.sendMessage(Text.of(TextColors.DARK_RED, "Not enough money. You need $", new DecimalFormat("#,###,##0.00").format(price)));
-				event.setCancelled(true);
-				return;
+				if (account.withdraw(economy.getDefaultCurrency(), new BigDecimal(price), Cause.of(NamedCause.source(Main.getPlugin()))).getResult() != ResultType.SUCCESS) {
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Not enough money. You need $", new DecimalFormat("#,###,##0.00").format(price)));
+					event.setCancelled(true);
+					return;
+				}
+
+				player.sendMessage(Text.of(TextColors.GREEN, "Charged $", new DecimalFormat("#,###,##0.00").format(price)));
 			}
 
-			player.sendMessage(Text.of(TextColors.GREEN, "Charged $", new DecimalFormat("#,###,##0.00").format(price)));
+			Particle particle = Particles.getDefaultEffect("teleport");
+			particle.spawnParticle(src, true, Particles.getDefaultColor("teleport", particle.isColorable()));
+			particle.spawnParticle(src.getRelative(Direction.UP), true, Particles.getDefaultColor("teleport", particle.isColorable()));
+		} finally {
+			timings.onTeleportEvent().stopTimingIfSync();
 		}
-
-		Particle particle = Particles.getDefaultEffect("teleport");
-		particle.spawnParticle(src, true, Particles.getDefaultColor("teleport", particle.isColorable()));
-		particle.spawnParticle(src.getRelative(Direction.UP), true, Particles.getDefaultColor("teleport", particle.isColorable()));
 	}
 
 	@Listener
 	public void onTeleportEventLocal(TeleportEvent.Local event) {
-		Player player = event.getPlayer();
+		timings.onTeleportEventLocal().startTiming();
+		
+		try {
+			Player player = event.getPlayer();
 
-		Location<World> src = event.getSource();
-		src = src.getExtent().getLocation(src.getBlockX(), src.getBlockY(), src.getBlockZ());
-		Location<World> dest = event.getDestination();
+			Location<World> src = event.getSource();
+			src = src.getExtent().getLocation(src.getBlockX(), src.getBlockY(), src.getBlockZ());
+			Location<World> dest = event.getDestination();
 
-		if (!player.hasPermission("pjp.worlds." + dest.getExtent().getName()) && !player.hasPermission("pjw.worlds." + dest.getExtent().getName())) {
-			player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to travel to ", dest.getExtent().getName()));
-			event.setCancelled(true);
-			return;
-		}
+			if (!player.hasPermission("pjp.worlds." + dest.getExtent().getName()) && !player.hasPermission("pjw.worlds." + dest.getExtent().getName())) {
+				player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to travel to ", dest.getExtent().getName()));
+				event.setCancelled(true);
+				return;
+			}
 
-		TeleportHelper teleportHelper = Main.getGame().getTeleportHelper();
+			TeleportHelper teleportHelper = Main.getGame().getTeleportHelper();
 
-		Optional<Location<World>> optionalLocation = teleportHelper.getSafeLocation(dest);
+			Optional<Location<World>> optionalLocation = teleportHelper.getSafeLocation(dest);
 
-		if (!optionalLocation.isPresent()) {
-			player.sendMessage(Text.builder().color(TextColors.DARK_RED).append(Text.of("Unsafe spawn point detected. Teleport anyway? ")).onClick(TextActions.executeCallback(Utils.unsafeTeleport(dest))).append(Text.of(TextColors.GOLD, TextStyles.UNDERLINE, "Click Here")).build());
-			event.setCancelled(true);
-			return;
-		}
+			if (!optionalLocation.isPresent()) {
+				player.sendMessage(Text.builder().color(TextColors.DARK_RED).append(Text.of("Unsafe spawn point detected. Teleport anyway? ")).onClick(TextActions.executeCallback(Utils.unsafeTeleport(dest))).append(Text.of(TextColors.GOLD, TextStyles.UNDERLINE, "Click Here")).build());
+				event.setCancelled(true);
+				return;
+			}
 
-		ConfigurationNode config = new ConfigManager().getConfig();
+			ConfigurationNode config = new ConfigManager().getConfig();
 
-		Text title = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
-		Text subTitle = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "sub_title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
+			Text title = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
+			Text subTitle = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "sub_title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
 
-		player.sendTitle(Title.of(title, subTitle));
+			player.sendTitle(Title.of(title, subTitle));
 
-		if (player.hasPermission("pjp.cmd.back")) {
-			CMDBack.players.put(player, src);
+			if (player.hasPermission("pjp.cmd.back")) {
+				CMDBack.players.put(player, src);
+			}
+		} finally {
+			timings.onTeleportEventLocal().stopTimingIfSync();
 		}
 	}
 
 	@Listener
 	public void onTeleportEventServer(TeleportEvent.Server event) {
-		Player player = event.getPlayer();
+		timings.onTeleportEventServer().startTiming();
+		
+		try {
+			Player player = event.getPlayer();
 
-		Optional<PluginContainer> optionalPlugin = Main.getGame().getPluginManager().getPlugin("spongycord");
+			Optional<PluginContainer> optionalPlugin = Main.getGame().getPluginManager().getPlugin("spongycord");
 
-		if (!optionalPlugin.isPresent()) {
-			player.sendMessage(Text.of(TextColors.DARK_RED, "Bungee portals require Spongee plugin dependency"));
-			event.setCancelled(true);
-			return;
+			if (!optionalPlugin.isPresent()) {
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Bungee portals require Spongee plugin dependency"));
+				event.setCancelled(true);
+				return;
+			}
+		} finally {
+			timings.onTeleportEventServer().stopTimingIfSync();
 		}
 	}
 
 	@Listener
-	public void onDisplaceEntityEvent(DisplaceEntityEvent.Teleport event) {
+	public void onDisplaceEntityEventTeleport(DisplaceEntityEvent.Teleport event) {
 		Entity entity = event.getTargetEntity();
 
 		if (!(entity instanceof Player)) {
 			return;
 		}
 		Player player = (Player) entity;
-
-		if (player.hasPermission("pjp.cmd.back")) {
-			CMDBack.players.put(player, event.getFromTransform().getLocation());
+		
+		timings.onDisplaceEntityEventTeleport().startTiming();
+		
+		try {
+			if (player.hasPermission("pjp.cmd.back")) {
+				CMDBack.players.put(player, event.getFromTransform().getLocation());
+			}
+		} finally {
+			timings.onDisplaceEntityEventTeleport().stopTimingIfSync();
 		}
 	}
 
 	@Listener
-	public void onDestructEntityEvent(DestructEntityEvent.Death event) {
+	public void onDestructEntityEventDeath(DestructEntityEvent.Death event) {
 		Living entity = event.getTargetEntity();
 
 		if (!(entity instanceof Player)) {
 			return;
 		}
 		Player player = (Player) entity;
-
-		if (player.hasPermission("pjp.cmd.back")) {
-			CMDBack.players.put(player, player.getLocation());
+		
+		timings.onDestructEntityEventDeath().startTiming();
+		
+		try {
+			if (player.hasPermission("pjp.cmd.back")) {
+				CMDBack.players.put(player, player.getLocation());
+			}
+		} finally {
+			timings.onDestructEntityEventDeath().stopTimingIfSync();
 		}
 	}
 }

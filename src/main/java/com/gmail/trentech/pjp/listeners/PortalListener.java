@@ -54,7 +54,7 @@ public class PortalListener {
 	@Listener
 	@Exclude(value = { ChangeBlockEvent.Place.class })
 	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
-		timings.onInteractBlockEventSecondary().startTimingIfSync();
+		timings.onInteractBlockEventSecondary().startTiming();
 		
 		try {
 			if (!props.containsKey(player.getUniqueId())) {
@@ -89,13 +89,13 @@ public class PortalListener {
 
 			player.sendMessage(Text.of(TextColors.DARK_GREEN, "Portal ", properties.getName(), " created successfully"));
 		} finally {
-			timings.onInteractBlockEventSecondary().stopTimingIfSync();
+			timings.onInteractBlockEventSecondary().stopTiming();
 		}
 	}
 	
 	@Listener
 	public void onConstructPortalEvent(ConstructPortalEvent event, @First Player player) {
-		timings.onConstructPortalEvent().startTimingIfSync();
+		timings.onConstructPortalEvent().startTiming();
 		
 		try {
 			List<Location<World>> locations = event.getLocations();
@@ -123,21 +123,21 @@ public class PortalListener {
 				return;
 			}
 		} finally {
-			timings.onConstructPortalEvent().stopTimingIfSync();
+			timings.onConstructPortalEvent().stopTiming();
 		}
 	}
 	
 	@Listener
 	public void onDisplaceEntityEventMoveItem(DisplaceEntityEvent.Move event) {
-		timings.onDisplaceEntityEventMoveItem().startTimingIfSync();
+		Entity entity = event.getTargetEntity();
+
+		if (!(entity instanceof Item)) {
+			return;
+		}
+		
+		timings.onDisplaceEntityEventMoveItem().startTiming();
 		
 		try {
-			Entity entity = event.getTargetEntity();
-
-			if (!(entity instanceof Item)) {
-				return;
-			}
-
 			Location<World> location = entity.getLocation();
 
 			Optional<Portal> optionalPortal = Portal.get(location);
@@ -164,25 +164,21 @@ public class PortalListener {
 
 			entity.setLocationAndRotation(spawnLocation, portal.getRotation().toVector3d());
 		} finally {
-			timings.onDisplaceEntityEventMoveItem().stopTimingIfSync();
+			timings.onDisplaceEntityEventMoveItem().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onDisplaceEntityEventMoveLiving(DisplaceEntityEvent.Move event) {
-		timings.onDisplaceEntityEventMoveLiving().startTimingIfSync();
+		Entity entity = event.getTargetEntity();
+
+		if (!(entity instanceof Living) || entity instanceof Player) {
+			return;
+		}
+		
+		timings.onDisplaceEntityEventMoveLiving().startTiming();
 		
 		try {
-			Entity entity = event.getTargetEntity();
-
-			if (!(entity instanceof Living)) {
-				return;
-			}
-
-			if (entity instanceof Player) {
-				return;
-			}
-			
 			Location<World> location = entity.getLocation();
 
 			Optional<Portal> optionalPortal = Portal.get(location);
@@ -209,7 +205,7 @@ public class PortalListener {
 
 			entity.setLocationAndRotation(spawnLocation, portal.getRotation().toVector3d());
 		} finally {
-			timings.onDisplaceEntityEventMoveLiving().stopTimingIfSync();
+			timings.onDisplaceEntityEventMoveLiving().stopTiming();
 		}
 	}
 	
@@ -217,16 +213,16 @@ public class PortalListener {
 
 	@Listener
 	public void onDisplaceEntityEventMovePlayer(DisplaceEntityEvent.Move event) {
-		timings.onDisplaceEntityEventMovePlayer().startTimingIfSync();
+		Entity entity = event.getTargetEntity();
+
+		if (!(entity instanceof Player)) {
+			return;
+		}
+		Player player = (Player) entity;
+		
+		timings.onDisplaceEntityEventMovePlayer().startTiming();
 		
 		try {
-			Entity entity = event.getTargetEntity();
-
-			if (!(entity instanceof Player)) {
-				return;
-			}
-			Player player = (Player) entity;
-
 			Location<World> location = event.getFromTransform().getLocation();
 
 			Optional<Portal> optionalPortal = Portal.get(location);
@@ -292,13 +288,13 @@ public class PortalListener {
 				}
 			}
 		} finally {
-			timings.onDisplaceEntityEventMovePlayer().stopTimingIfSync();
+			timings.onDisplaceEntityEventMovePlayer().stopTiming();
 		}
 	}
 	
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
-		timings.onChangeBlockEventPlace().startTimingIfSync();
+		timings.onChangeBlockEventPlace().startTiming();
 		
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
@@ -312,13 +308,13 @@ public class PortalListener {
 				break;
 			}
 		} finally {
-			timings.onChangeBlockEventPlace().stopTimingIfSync();
+			timings.onChangeBlockEventPlace().stopTiming();
 		}
 	}
 
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
-		timings.onChangeBlockEventBreak().startTimingIfSync();
+		timings.onChangeBlockEventBreak().startTiming();
 		
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
@@ -332,7 +328,7 @@ public class PortalListener {
 				break;
 			}
 		} finally {
-			timings.onChangeBlockEventBreak().stopTimingIfSync();
+			timings.onChangeBlockEventBreak().stopTiming();
 		}
 	}
 }

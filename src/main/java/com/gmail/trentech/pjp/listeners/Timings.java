@@ -6,7 +6,9 @@ import co.aikar.timings.Timing;
 
 public class Timings {
 
-	private final Timing changeSignEvent, interactBlockEventSecondary, changeBlockEventModify, changeBlockEventPlace, changeBlockEventBreak, constructPortalEvent, displaceEntityEventMoveItem, displaceEntityEventMoveLiving, displaceEntityEventMovePlayer;
+	private final Timing changeSignEvent, interactBlockEventSecondary, changeBlockEventModify, changeBlockEventPlace,
+	changeBlockEventBreak, constructPortalEvent, displaceEntityEventMoveItem, displaceEntityEventMoveLiving, displaceEntityEventMovePlayer,
+	displaceEntityEventTeleport, teleportEvent, teleportEventServer, teleportEventLocal, destructEntityEventDeath;
 
 	public Timings() {
 		this.changeSignEvent = timing("onChangeSignEvent");
@@ -18,6 +20,11 @@ public class Timings {
 		this.displaceEntityEventMoveItem = timing("onDisplaceEntityEventMoveItem");
 		this.displaceEntityEventMoveLiving = timing("onDisplaceEntityEventMoveLiving");
 		this.displaceEntityEventMovePlayer = timing("onDisplaceEntityEventMovePlayer");
+		this.displaceEntityEventTeleport = timing("onDisplaceEntityEventTeleport");
+		this.teleportEvent = timing("onTeleportEvent");
+		this.teleportEventServer = timing("onTeleportEventServer");
+		this.teleportEventLocal = timing("onTeleportEventLocal");
+		this.destructEntityEventDeath = timing("onDestructEntityEventDeath");
 	}
 
 	private Timing timing(String key) {
@@ -48,6 +55,21 @@ public class Timings {
 		return displaceEntityEventMovePlayer;
 	}
 	
+	public Timing onDisplaceEntityEventTeleport() {
+		return displaceEntityEventTeleport;
+	}
+	
+	public Timing onTeleportEvent() {
+		return teleportEvent;
+	}
+	
+	public Timing onTeleportEventLocal() {
+		return teleportEventLocal;
+	}
+	
+	public Timing onTeleportEventServer() {
+		return teleportEventServer;
+	}
 	public Timing onChangeBlockEventModify() {
 		return changeBlockEventModify;
 	}
@@ -58,5 +80,9 @@ public class Timings {
 	
 	public Timing onChangeBlockEventBreak() {
 		return changeBlockEventBreak;
+	}
+	
+	public Timing onDestructEntityEventDeath() {
+		return destructEntityEventDeath;
 	}
 }

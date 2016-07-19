@@ -74,15 +74,15 @@ public class Main {
 
 		legacy = configManager.getConfig().getNode("options", "portal", "legacy_builder").getBoolean();
 
-		getGame().getEventManager().registerListeners(this, new TeleportListener());
+		Timings timings = new Timings();
+		
+		getGame().getEventManager().registerListeners(this, new TeleportListener(timings));
 
 		getGame().getCommandManager().register(this, new CMDBack().cmdBack, "back");
 		getGame().getCommandManager().register(this, new CommandManager().cmdPJP, "pjp");
 
 		ConfigurationNode modules = configManager.getConfig().getNode("settings", "modules");
 
-		Timings timings = new Timings();
-		
 		if (modules.getNode("portals").getBoolean()) {
 			getGame().getDataManager().registerBuilder(Portal.class, new PortalBuilder());
 			getGame().getEventManager().registerListeners(this, new PortalListener(timings));
