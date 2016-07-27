@@ -101,7 +101,7 @@ public class PortalBase extends SQLUtils implements DataSerializable {
 			return Optional.of(world.getSpawnLocation());
 		} else {
 			String[] coords = args[1].split("\\.");
-			
+
 			int x = Integer.parseInt(coords[0]);
 			int y = Integer.parseInt(coords[1]);
 			int z = Integer.parseInt(coords[2]);

@@ -43,11 +43,11 @@ public class PlateListener {
 	public PlateListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	public void onChangeBlockEventModify(ChangeBlockEvent.Modify event, @First Player player) {
 		timings.onChangeBlockEventModify().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				BlockSnapshot snapshot = transaction.getFinal();
@@ -129,7 +129,7 @@ public class PlateListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();
@@ -157,7 +157,7 @@ public class PlateListener {
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
 		timings.onChangeBlockEventPlace().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				return;

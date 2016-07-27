@@ -25,11 +25,11 @@ public class LegacyListener {
 	public LegacyListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
 		timings.onChangeBlockEventPlace().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
@@ -68,7 +68,7 @@ public class LegacyListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {

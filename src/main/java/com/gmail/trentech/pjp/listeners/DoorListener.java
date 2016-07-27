@@ -39,7 +39,7 @@ import flavor.pie.spongycord.SpongyCord;
 public class DoorListener {
 
 	public static ConcurrentHashMap<UUID, Door> builders = new ConcurrentHashMap<>();
-	
+
 	private Timings timings;
 
 	public DoorListener(Timings timings) {
@@ -49,7 +49,7 @@ public class DoorListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();
@@ -77,7 +77,7 @@ public class DoorListener {
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
 		timings.onChangeBlockEventPlace().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				return;
@@ -121,7 +121,7 @@ public class DoorListener {
 	@Listener
 	public void onDisplaceEntityEventMovePlayer(DisplaceEntityEvent.Move event) {
 		timings.onDisplaceEntityEventMovePlayer().startTiming();
-		
+
 		try {
 			Entity entity = event.getTargetEntity();
 

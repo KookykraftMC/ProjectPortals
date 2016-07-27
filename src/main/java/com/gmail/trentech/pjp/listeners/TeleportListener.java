@@ -44,11 +44,11 @@ public class TeleportListener {
 	public TeleportListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	public void onTeleportEvent(TeleportEvent event) {
 		timings.onTeleportEvent().startTiming();
-		
+
 		try {
 			Player player = event.getPlayer();
 
@@ -83,7 +83,7 @@ public class TeleportListener {
 	@Listener
 	public void onTeleportEventLocal(TeleportEvent.Local event) {
 		timings.onTeleportEventLocal().startTiming();
-		
+
 		try {
 			Player player = event.getPlayer();
 
@@ -125,7 +125,7 @@ public class TeleportListener {
 	@Listener
 	public void onTeleportEventServer(TeleportEvent.Server event) {
 		timings.onTeleportEventServer().startTiming();
-		
+
 		try {
 			Player player = event.getPlayer();
 
@@ -149,9 +149,9 @@ public class TeleportListener {
 			return;
 		}
 		Player player = (Player) entity;
-		
+
 		timings.onDisplaceEntityEventTeleport().startTiming();
-		
+
 		try {
 			if (player.hasPermission("pjp.cmd.back")) {
 				CMDBack.players.put(player, event.getFromTransform().getLocation());
@@ -169,9 +169,9 @@ public class TeleportListener {
 			return;
 		}
 		Player player = (Player) entity;
-		
+
 		timings.onDestructEntityEventDeath().startTiming();
-		
+
 		try {
 			if (player.hasPermission("pjp.cmd.back")) {
 				CMDBack.players.put(player, player.getLocation());

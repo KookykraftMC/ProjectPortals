@@ -50,39 +50,39 @@ public class PortalListener {
 	public PortalListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	@Exclude(value = { ChangeBlockEvent.Place.class })
 	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
 		timings.onInteractBlockEventSecondary().startTiming();
-		
+
 		try {
 			if (!props.containsKey(player.getUniqueId())) {
 				return;
 			}
 			PortalProperties properties = props.get(player.getUniqueId());
-			
-			if(player.getItemInHand().isPresent()) {
+
+			if (player.getItemInHand().isPresent()) {
 				player.sendMessage(Text.of(TextColors.YELLOW, "Hand must be empty"));
 				return;
 			}
-			
+
 			Optional<Location<World>> optionalLocation = event.getTargetBlock().getLocation();
-			
-			if(!optionalLocation.isPresent()) {
+
+			if (!optionalLocation.isPresent()) {
 				return;
 			}
 			Location<World> location = optionalLocation.get();
 
 			Direction direction = PlayerDirection.getClosest(player.getRotation().getFloorY()).getDirection();
-			
+
 			com.gmail.trentech.pjp.portal.PortalBuilder builder = new com.gmail.trentech.pjp.portal.PortalBuilder(location, direction);
-			
-			if(!builder.spawnPortal(properties)) {
+
+			if (!builder.spawnPortal(properties)) {
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Not a valid portal shape"));
 				return;
 			}
-			
+
 			Main.getGame().getScheduler().createTaskBuilder().delayTicks(20).execute(t -> {
 				props.remove(player.getUniqueId());
 			}).submit(Main.getPlugin());
@@ -92,11 +92,11 @@ public class PortalListener {
 			timings.onInteractBlockEventSecondary().stopTiming();
 		}
 	}
-	
+
 	@Listener
 	public void onConstructPortalEvent(ConstructPortalEvent event, @First Player player) {
 		timings.onConstructPortalEvent().startTiming();
-		
+
 		try {
 			List<Location<World>> locations = event.getLocations();
 
@@ -126,7 +126,7 @@ public class PortalListener {
 			timings.onConstructPortalEvent().stopTiming();
 		}
 	}
-	
+
 	@Listener
 	public void onDisplaceEntityEventMoveItem(DisplaceEntityEvent.Move event) {
 		Entity entity = event.getTargetEntity();
@@ -134,9 +134,9 @@ public class PortalListener {
 		if (!(entity instanceof Item)) {
 			return;
 		}
-		
+
 		timings.onDisplaceEntityEventMoveItem().startTiming();
-		
+
 		try {
 			Location<World> location = entity.getLocation();
 
@@ -145,7 +145,7 @@ public class PortalListener {
 			if (!optionalPortal.isPresent()) {
 				return;
 			}
-			Portal portal = optionalPortal.get();		
+			Portal portal = optionalPortal.get();
 
 			if (portal.isBungee()) {
 				return;
@@ -175,9 +175,9 @@ public class PortalListener {
 		if (!(entity instanceof Living) || entity instanceof Player) {
 			return;
 		}
-		
+
 		timings.onDisplaceEntityEventMoveLiving().startTiming();
-		
+
 		try {
 			Location<World> location = entity.getLocation();
 
@@ -186,7 +186,7 @@ public class PortalListener {
 			if (!optionalPortal.isPresent()) {
 				return;
 			}
-			Portal portal = optionalPortal.get();		
+			Portal portal = optionalPortal.get();
 
 			if (portal.isBungee()) {
 				return;
@@ -208,7 +208,7 @@ public class PortalListener {
 			timings.onDisplaceEntityEventMoveLiving().stopTiming();
 		}
 	}
-	
+
 	private static List<UUID> cache = new ArrayList<>();
 
 	@Listener
@@ -219,9 +219,9 @@ public class PortalListener {
 			return;
 		}
 		Player player = (Player) entity;
-		
+
 		timings.onDisplaceEntityEventMovePlayer().startTiming();
-		
+
 		try {
 			Location<World> location = event.getFromTransform().getLocation();
 
@@ -291,11 +291,11 @@ public class PortalListener {
 			timings.onDisplaceEntityEventMovePlayer().stopTiming();
 		}
 	}
-	
+
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
 		timings.onChangeBlockEventPlace().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();
@@ -315,7 +315,7 @@ public class PortalListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();

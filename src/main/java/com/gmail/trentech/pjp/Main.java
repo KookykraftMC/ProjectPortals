@@ -58,7 +58,6 @@ public class Main {
 	private static Logger log;
 	private static PluginContainer plugin;
 	private static boolean legacy;
-	
 
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event) {
@@ -75,7 +74,7 @@ public class Main {
 		legacy = configManager.getConfig().getNode("options", "portal", "legacy_builder").getBoolean();
 
 		Timings timings = new Timings();
-		
+
 		getGame().getEventManager().registerListeners(this, new TeleportListener(timings));
 
 		getGame().getCommandManager().register(this, new CMDBack().cmdBack, "back");

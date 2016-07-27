@@ -45,11 +45,11 @@ public class SignListener {
 	public SignListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	public void onChangeSignEvent(ChangeSignEvent event, @First Player player) {
 		timings.onChangeSignEvent().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				return;
@@ -78,7 +78,7 @@ public class SignListener {
 	@Listener
 	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
 		timings.onChangeSignEvent().startTiming();
-		
+
 		try {
 			BlockSnapshot snapshot = event.getTargetBlock();
 			if (!(snapshot.getState().getType().equals(BlockTypes.WALL_SIGN) || snapshot.getState().getType().equals(BlockTypes.STANDING_SIGN))) {
@@ -148,7 +148,7 @@ public class SignListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> blockTransaction : event.getTransactions()) {
 				BlockSnapshot snapshot = blockTransaction.getOriginal();

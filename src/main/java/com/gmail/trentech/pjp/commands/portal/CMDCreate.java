@@ -134,7 +134,7 @@ public class CMDCreate implements CommandExecutor {
 						return;
 					}
 
-					if(Main.isLegacy()) {
+					if (Main.isLegacy()) {
 						LegacyListener.builders.put(player.getUniqueId(), new LegacyBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
 						player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 					} else {
@@ -193,8 +193,8 @@ public class CMDCreate implements CommandExecutor {
 
 				rotation.set(optionalRotation.get());
 			}
-			
-			if(Main.isLegacy()) {
+
+			if (Main.isLegacy()) {
 				LegacyListener.builders.put(player.getUniqueId(), new LegacyBuilder(name, destination.get(), rotation.get(), particle.get(), color.get(), price.get(), isBungee));
 				player.sendMessage(Text.builder().color(TextColors.DARK_GREEN).append(Text.of("Begin building your portal frame, followed by ")).onClick(TextActions.runCommand("/pjp:portal save")).append(Text.of(TextColors.YELLOW, TextStyles.UNDERLINE, "/portal save")).build());
 			} else {

@@ -37,17 +37,17 @@ import flavor.pie.spongycord.SpongyCord;
 public class ButtonListener {
 
 	public static ConcurrentHashMap<UUID, Button> builders = new ConcurrentHashMap<>();
-	
+
 	private Timings timings;
 
 	public ButtonListener(Timings timings) {
 		this.timings = timings;
 	}
-	
+
 	@Listener
 	public void onChangeBlockEventModify(ChangeBlockEvent.Modify event, @First Player player) {
 		timings.onChangeBlockEventModify().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				BlockSnapshot snapshot = transaction.getFinal();
@@ -130,7 +130,7 @@ public class ButtonListener {
 	@Listener
 	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
 		timings.onChangeBlockEventBreak().startTiming();
-		
+
 		try {
 			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 				Location<World> location = transaction.getFinal().getLocation().get();
@@ -159,7 +159,7 @@ public class ButtonListener {
 	@Listener
 	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
 		timings.onChangeBlockEventPlace().startTiming();
-		
+
 		try {
 			if (!builders.containsKey(player.getUniqueId())) {
 				return;

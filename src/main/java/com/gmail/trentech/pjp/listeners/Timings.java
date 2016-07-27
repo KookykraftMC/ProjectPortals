@@ -7,8 +7,9 @@ import co.aikar.timings.Timing;
 public class Timings {
 
 	private final Timing changeSignEvent, interactBlockEventSecondary, changeBlockEventModify, changeBlockEventPlace,
-	changeBlockEventBreak, constructPortalEvent, displaceEntityEventMoveItem, displaceEntityEventMoveLiving, displaceEntityEventMovePlayer,
-	displaceEntityEventTeleport, teleportEvent, teleportEventServer, teleportEventLocal, destructEntityEventDeath;
+		changeBlockEventBreak, constructPortalEvent, displaceEntityEventMoveItem, displaceEntityEventMoveLiving,
+		displaceEntityEventMovePlayer, displaceEntityEventTeleport, teleportEvent, teleportEventServer,
+		teleportEventLocal, destructEntityEventDeath;
 
 	public Timings() {
 		this.changeSignEvent = timing("onChangeSignEvent");
@@ -54,34 +55,35 @@ public class Timings {
 	public Timing onDisplaceEntityEventMovePlayer() {
 		return displaceEntityEventMovePlayer;
 	}
-	
+
 	public Timing onDisplaceEntityEventTeleport() {
 		return displaceEntityEventTeleport;
 	}
-	
+
 	public Timing onTeleportEvent() {
 		return teleportEvent;
 	}
-	
+
 	public Timing onTeleportEventLocal() {
 		return teleportEventLocal;
 	}
-	
+
 	public Timing onTeleportEventServer() {
 		return teleportEventServer;
 	}
+
 	public Timing onChangeBlockEventModify() {
 		return changeBlockEventModify;
 	}
-	
+
 	public Timing onChangeBlockEventPlace() {
 		return changeBlockEventPlace;
 	}
-	
+
 	public Timing onChangeBlockEventBreak() {
 		return changeBlockEventBreak;
 	}
-	
+
 	public Timing onDestructEntityEventDeath() {
 		return destructEntityEventDeath;
 	}

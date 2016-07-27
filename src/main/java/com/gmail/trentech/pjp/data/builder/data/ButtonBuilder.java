@@ -1,9 +1,9 @@
 package com.gmail.trentech.pjp.data.builder.data;
 
+import static com.gmail.trentech.pjp.data.DataQueries.BUNGEE;
 import static com.gmail.trentech.pjp.data.DataQueries.DESTINATION;
 import static com.gmail.trentech.pjp.data.DataQueries.PRICE;
 import static com.gmail.trentech.pjp.data.DataQueries.ROTATION;
-import static com.gmail.trentech.pjp.data.DataQueries.BUNGEE;
 
 import java.util.Optional;
 

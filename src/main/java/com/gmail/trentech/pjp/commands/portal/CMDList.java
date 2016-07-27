@@ -42,7 +42,7 @@ public class CMDList implements CommandExecutor {
 
 			Location<World> location = portal.getFrame().get(0);
 			String worldName = location.getExtent().getName();
-			
+
 			double price = portal.getPrice();
 			if (price == 0) {
 				list.add(Text.of(TextColors.GREEN, "Name: ", TextColors.WHITE, name, TextColors.GREEN, " Location: ", TextColors.WHITE, worldName, " ", location.getBlockX(), " ", location.getBlockY(), " ", location.getBlockZ()));
