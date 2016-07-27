@@ -27,40 +27,40 @@ public class CMDRemove implements CommandExecutor {
 		help.setExample(" /home remove OldHome");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!(src instanceof Player)) {
+		if (!(src instanceof Player)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Must be a player"));
 			return CommandResult.empty();
 		}
 		Player player = (Player) src;
-		
-		if(!args.hasAny("name")) {
+
+		if (!args.hasAny("name")) {
 			src.sendMessage(Text.of(TextColors.RED, "Usage: /home remove <name>"));
 			return CommandResult.empty();
 		}
-		String homeName = args.<String>getOne("name").get().toLowerCase();
-		
+		String homeName = args.<String> getOne("name").get().toLowerCase();
+
 		Map<String, Home> homeList = new HashMap<>();
 
 		Optional<Map<String, Home>> optionalHomeList = player.get(Keys.HOMES);
-		
-		if(optionalHomeList.isPresent()) {
+
+		if (optionalHomeList.isPresent()) {
 			homeList = optionalHomeList.get();
 		}
 
-		if(!homeList.containsKey(homeName)) {
+		if (!homeList.containsKey(homeName)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, homeName, " does not exist"));
 			return CommandResult.empty();
 		}
-		
+
 		homeList.remove(homeName);
-		
+
 		DataTransactionResult result = player.offer(new HomeData(homeList));
-		if(!result.isSuccessful()) {
+		if (!result.isSuccessful()) {
 			System.out.println("FAILED");
-		}else{
+		} else {
 			player.sendMessage(Text.of(TextColors.DARK_GREEN, "Home ", homeName, " removed"));
 		}
 

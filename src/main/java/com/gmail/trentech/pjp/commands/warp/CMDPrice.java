@@ -20,30 +20,30 @@ public class CMDPrice implements CommandExecutor {
 		help.setExample(" /warp price Lobby 50\n /warp price Lobby 0");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!args.hasAny("name")) {
+		if (!args.hasAny("name")) {
 			src.sendMessage(getUsage());
 			return CommandResult.empty();
 		}
-		String name = args.<String>getOne("name").get().toLowerCase();
+		String name = args.<String> getOne("name").get().toLowerCase();
 
-		if(!Warp.get(name).isPresent()) {
+		if (!Warp.get(name).isPresent()) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, name, " does not exist"));
 			return CommandResult.empty();
-		}	
+		}
 		Warp warp = Warp.get(name).get();
-		
-		if(!args.hasAny("price")) {
+
+		if (!args.hasAny("price")) {
 			src.sendMessage(getUsage());
 			return CommandResult.empty();
 		}
-		
+
 		double price;
-		try{
-			price = Double.parseDouble(args.<String>getOne("price").get());
-		}catch(Exception e) {
+		try {
+			price = Double.parseDouble(args.<String> getOne("price").get());
+		} catch (Exception e) {
 			src.sendMessage(Text.of(TextColors.RED, "Incorrect price"));
 			src.sendMessage(getUsage());
 			return CommandResult.empty();
@@ -53,15 +53,15 @@ public class CMDPrice implements CommandExecutor {
 		warp.update();
 
 		src.sendMessage(Text.of(TextColors.DARK_GREEN, "Set price of warp ", name, " to $", price));
-		
+
 		return CommandResult.success();
 	}
-	
+
 	private Text getUsage() {
 		Text usage = Text.of(TextColors.RED, "Usage: /warp price <name>");
-		
+
 		usage = Text.join(usage, Text.builder().color(TextColors.RED).onHover(TextActions.showText(Text.of("Enter the cost to use portal or 0 to disable"))).append(Text.of(" <price>")).build());
-		
+
 		return usage;
 	}
 }

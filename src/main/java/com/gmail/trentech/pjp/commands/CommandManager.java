@@ -155,7 +155,7 @@ public class CommandManager {
 		    		.valueFlag(GenericArguments.string(Text.of("x,y,z")), "c")
 		    		.valueFlag(GenericArguments.string(Text.of("direction")), "d")
 		    		.valueFlag(GenericArguments.string(Text.of("price")), "p").buildWith(GenericArguments.none()))
-		    .executor(new CMDButton())
+		    .executor(new CMDObj.Button())
 		    .build();
 
 	public CommandSpec cmdDoor = CommandSpec.builder()
@@ -166,7 +166,7 @@ public class CommandManager {
 		    		.valueFlag(GenericArguments.string(Text.of("x,y,z")), "c")
 		    		.valueFlag(GenericArguments.string(Text.of("direction")), "d")
 		    		.valueFlag(GenericArguments.string(Text.of("price")), "p").buildWith(GenericArguments.none()))
-		    .executor(new CMDDoor())
+		    .executor(new CMDObj.Door())
 		    .build();
 	
 	public CommandSpec cmdLever = CommandSpec.builder()
@@ -177,7 +177,7 @@ public class CommandManager {
 		    		.valueFlag(GenericArguments.string(Text.of("x,y,z")), "c")
 		    		.valueFlag(GenericArguments.string(Text.of("direction")), "d")
 		    		.valueFlag(GenericArguments.string(Text.of("price")), "p").buildWith(GenericArguments.none()))
-		    .executor(new CMDLever())
+		    .executor(new CMDObj.Lever())
 		    .build();
 	
 	public CommandSpec cmdPlate = CommandSpec.builder()
@@ -188,7 +188,7 @@ public class CommandManager {
 		    		.valueFlag(GenericArguments.string(Text.of("x,y,z")), "c")
 		    		.valueFlag(GenericArguments.string(Text.of("direction")), "d")
 		    		.valueFlag(GenericArguments.string(Text.of("price")), "p").buildWith(GenericArguments.none()))
-		    .executor(new CMDPlate())
+		    .executor(new CMDObj.Plate())
 		    .build();
 
 	public CommandSpec cmdSign = CommandSpec.builder()
@@ -199,7 +199,7 @@ public class CommandManager {
 		    		.valueFlag(GenericArguments.string(Text.of("x,y,z")), "c")
 		    		.valueFlag(GenericArguments.string(Text.of("direction")), "d")
 		    		.valueFlag(GenericArguments.string(Text.of("price")), "p").buildWith(GenericArguments.none()))
-		    .executor(new CMDSign())
+		    .executor(new CMDObj.Sign())
 		    .build();
 	
 	public CommandSpec cmdPJP = CommandSpec.builder()

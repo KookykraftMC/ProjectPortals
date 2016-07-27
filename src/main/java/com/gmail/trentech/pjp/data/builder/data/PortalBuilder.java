@@ -27,60 +27,60 @@ import com.gmail.trentech.pjp.utils.Rotation;
 
 public class PortalBuilder extends AbstractDataBuilder<Portal> {
 
-    public PortalBuilder() {
-        super(Portal.class, 1);
-    }
+	public PortalBuilder() {
+		super(Portal.class, 1);
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
-    protected Optional<Portal> buildContent(DataView container) throws InvalidDataException {
-        if (container.contains(DESTINATION, ROTATION, FRAME, FILL, PARTICLE, COLOR, PRICE, BUNGEE)) {
-        	String destination = container.getString(DESTINATION).get();
-        	String rotation = container.getString(ROTATION).get();
-        	
-        	List<Location<World>> frame = new ArrayList<>();
-        	
-        	for(String loc : (List<String>) container.getList(FRAME).get()) {
-    			String[] args = loc.split(":");
-    			
-    			Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
-    			
-    			if(!optionalWorld.isPresent()) {
-    				continue;
-    			}
-    			World world = optionalWorld.get();
+	protected Optional<Portal> buildContent(DataView container) throws InvalidDataException {
+		if (container.contains(DESTINATION, ROTATION, FRAME, FILL, PARTICLE, COLOR, PRICE, BUNGEE)) {
+			String destination = container.getString(DESTINATION).get();
+			String rotation = container.getString(ROTATION).get();
 
-    			String[] coords = args[1].split("\\.");
+			List<Location<World>> frame = new ArrayList<>();
 
-    			frame.add(new Location<World>(world, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])));
-        	}
-        	
-        	List<Location<World>> fill = new ArrayList<>();
-        	
-        	for(String loc : (List<String>) container.getList(FILL).get()) {
-    			String[] args = loc.split(":");
-    			
-    			Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
-    			
-    			if(!optionalWorld.isPresent()) {
-    				continue;
-    			}
-    			World world = optionalWorld.get();
-    
-    			String[] coords = args[1].split("\\.");
+			for (String loc : (List<String>) container.getList(FRAME).get()) {
+				String[] args = loc.split(":");
 
-    			fill.add(new Location<World>(world, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])));
-        	}
+				Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
 
-        	String particle = container.getString(PARTICLE).get();
-        	String color = container.getString(COLOR).get();
+				if (!optionalWorld.isPresent()) {
+					continue;
+				}
+				World world = optionalWorld.get();
 
-        	Double price = container.getDouble(PRICE).get();
-        	boolean bungee = container.getBoolean(BUNGEE).get();
-        	
-            return Optional.of(new Portal(destination, Rotation.get(rotation).get(), frame, fill, Particles.get(particle).get(), ParticleColor.get(color), price, bungee));
-        }
-        
-        return Optional.empty();
-    }
+				String[] coords = args[1].split("\\.");
+
+				frame.add(new Location<World>(world, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])));
+			}
+
+			List<Location<World>> fill = new ArrayList<>();
+
+			for (String loc : (List<String>) container.getList(FILL).get()) {
+				String[] args = loc.split(":");
+
+				Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
+
+				if (!optionalWorld.isPresent()) {
+					continue;
+				}
+				World world = optionalWorld.get();
+
+				String[] coords = args[1].split("\\.");
+
+				fill.add(new Location<World>(world, Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])));
+			}
+
+			String particle = container.getString(PARTICLE).get();
+			String color = container.getString(COLOR).get();
+
+			Double price = container.getDouble(PRICE).get();
+			boolean bungee = container.getBoolean(BUNGEE).get();
+
+			return Optional.of(new Portal(destination, Rotation.get(rotation).get(), frame, fill, Particles.get(particle).get(), ParticleColor.get(color), price, bungee));
+		}
+
+		return Optional.empty();
+	}
 }

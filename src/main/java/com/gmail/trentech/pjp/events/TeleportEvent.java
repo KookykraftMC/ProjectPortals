@@ -8,22 +8,22 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 public class TeleportEvent extends AbstractEvent implements Cancellable {
-	
+
 	private final Player player;
 	private final Cause cause;
 	private double price;
 	private boolean cancelled = false;
-	
+
 	public TeleportEvent(Player player, Cause cause, double price) {
 		this.player = player;
 		this.cause = cause;
 		this.price = price;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public double getPrice() {
 		return price;
 	}
@@ -35,14 +35,14 @@ public class TeleportEvent extends AbstractEvent implements Cancellable {
 
 	@Override
 	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;		
+		this.cancelled = cancel;
 	}
-	
+
 	@Override
 	public Cause getCause() {
 		return cause;
 	}
-	
+
 	public static class Local extends TeleportEvent {
 
 		private final Location<World> source;
@@ -50,7 +50,7 @@ public class TeleportEvent extends AbstractEvent implements Cancellable {
 
 		public Local(Player player, Location<World> source, Location<World> destination, double price, Cause cause) {
 			super(player, cause, price);
-			
+
 			this.source = source;
 			this.setDestination(destination);
 		}
@@ -67,15 +67,15 @@ public class TeleportEvent extends AbstractEvent implements Cancellable {
 			return source;
 		}
 	}
-	
+
 	public static class Server extends TeleportEvent {
 
 		private final String source;
 		private String destination;
-		
+
 		public Server(Player player, String source, String destination, double price, Cause cause) {
 			super(player, cause, price);
-			
+
 			this.source = source;
 			this.destination = destination;
 		}
@@ -91,7 +91,7 @@ public class TeleportEvent extends AbstractEvent implements Cancellable {
 		public String getSource() {
 			return source;
 		}
-		
+
 	}
 
 }

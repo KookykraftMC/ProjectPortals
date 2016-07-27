@@ -14,19 +14,19 @@ import com.gmail.trentech.pjp.utils.Rotation;
 
 public class HomeBuilder extends AbstractDataBuilder<Home> {
 
-    public HomeBuilder() {
-        super(Home.class, 1);
-    }
+	public HomeBuilder() {
+		super(Home.class, 1);
+	}
 
-    @Override
-    protected Optional<Home> buildContent(DataView container) throws InvalidDataException {
-        if (container.contains(DESTINATION, ROTATION)) {
-        	String destination = container.getString(DESTINATION).get();
-        	String rotation = container.getString(ROTATION).get();
+	@Override
+	protected Optional<Home> buildContent(DataView container) throws InvalidDataException {
+		if (container.contains(DESTINATION, ROTATION)) {
+			String destination = container.getString(DESTINATION).get();
+			String rotation = container.getString(ROTATION).get();
 
-            return Optional.of(new Home(destination, Rotation.get(rotation).get()));
-        }
-        
-        return Optional.empty();
-    }
+			return Optional.of(new Home(destination, Rotation.get(rotation).get()));
+		}
+
+		return Optional.empty();
+	}
 }

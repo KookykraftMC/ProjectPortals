@@ -14,13 +14,13 @@ public class ConstructPortalEvent extends AbstractEvent implements Cancellable {
 
 	private final Cause cause;
 	private final List<Location<World>> locations;
-	
+
 	public ConstructPortalEvent(List<Location<World>> frame, List<Location<World>> fill, Cause cause) {
 		this.cause = cause;
 		frame.addAll(fill);
 		this.locations = frame;
 	}
-	
+
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
@@ -28,9 +28,9 @@ public class ConstructPortalEvent extends AbstractEvent implements Cancellable {
 
 	@Override
 	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;		
+		this.cancelled = cancel;
 	}
-	
+
 	@Override
 	public Cause getCause() {
 		return cause;

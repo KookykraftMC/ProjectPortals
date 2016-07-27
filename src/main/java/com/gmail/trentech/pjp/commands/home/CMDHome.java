@@ -14,7 +14,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.service.pagination.PaginationList.Builder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -34,60 +34,60 @@ public class CMDHome implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!(src instanceof Player)) {
+		if (!(src instanceof Player)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Must be a player"));
 			return CommandResult.empty();
 		}
 		Player player = (Player) src;
-		
-		if(args.hasAny("name")) {
-			String homeName = args.<String>getOne("name").get().toLowerCase();
+
+		if (args.hasAny("name")) {
+			String homeName = args.<String> getOne("name").get().toLowerCase();
 
 			Map<String, Home> homeList = new HashMap<>();
 
 			Optional<Map<String, Home>> optionalHomeList = player.get(Keys.HOMES);
-			
-			if(optionalHomeList.isPresent()) {
+
+			if (optionalHomeList.isPresent()) {
 				homeList = optionalHomeList.get();
-			}else{
+			} else {
 				player.offer(new HomeData(new HashMap<String, Home>()));
 			}
 
-			if(!homeList.containsKey(homeName)) {
+			if (!homeList.containsKey(homeName)) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, homeName, " does not exist"));
 				return CommandResult.empty();
 			}
 			Home home = homeList.get(homeName);
-			
+
 			Optional<Location<World>> optionalSpawnLocation = home.getDestination();
-			
-			if(!optionalSpawnLocation.isPresent()) {
+
+			if (!optionalSpawnLocation.isPresent()) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, homeName, " is invalid"));
 				return CommandResult.empty();
 			}
 			Location<World> spawnLocation = optionalSpawnLocation.get();
 
-			if(args.hasAny("player")) {
-				String playerName = args.<String>getOne("player").get();
+			if (args.hasAny("player")) {
+				String playerName = args.<String> getOne("player").get();
 
-				if(!src.hasPermission("pjp.cmd.home.others")) {
+				if (!src.hasPermission("pjp.cmd.home.others")) {
 					player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to warp others"));
 					return CommandResult.empty();
 				}
-				
+
 				Optional<Player> optionalPlayer = Main.getGame().getServer().getPlayer(playerName);
-				
-				if(!optionalPlayer.isPresent()) {
+
+				if (!optionalPlayer.isPresent()) {
 					player.sendMessage(Text.of(TextColors.DARK_RED, playerName, " does not exist"));
 					return CommandResult.empty();
 				}
-				
+
 				player = optionalPlayer.get();
 			}
 
 			Local teleportEvent = new TeleportEvent.Local(player, player.getLocation(), spawnLocation, 0, Cause.of(NamedCause.source("home")));
 
-			if(!Main.getGame().getEventManager().post(teleportEvent)) {
+			if (!Main.getGame().getEventManager().post(teleportEvent)) {
 				spawnLocation = teleportEvent.getDestination();
 
 				player.setLocationAndRotation(spawnLocation, home.getRotation().toVector3d());
@@ -96,30 +96,34 @@ public class CMDHome implements CommandExecutor {
 			return CommandResult.success();
 		}
 
-		Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
-		
-		pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.GREEN, "Command List")).build());
-		
 		List<Text> list = new ArrayList<>();
-		
-		if(src.hasPermission("pjp.cmd.home.others")) {
+
+		if (src.hasPermission("pjp.cmd.home.others")) {
 			list.add(Text.of(TextColors.YELLOW, " /home <name> [player]\n"));
 		}
-		if(src.hasPermission("pjp.cmd.home.create")) {
-			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information ")))
-					.onClick(TextActions.executeCallback(Help.getHelp("hcreate"))).append(Text.of(" /home create")).build());
+		if (src.hasPermission("pjp.cmd.home.create")) {
+			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information "))).onClick(TextActions.executeCallback(Help.getHelp("hcreate"))).append(Text.of(" /home create")).build());
 		}
-		if(src.hasPermission("pjp.cmd.home.remove")) {
-			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information ")))
-					.onClick(TextActions.executeCallback(Help.getHelp("hremove"))).append(Text.of(" /home remove")).build());
+		if (src.hasPermission("pjp.cmd.home.remove")) {
+			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information "))).onClick(TextActions.executeCallback(Help.getHelp("hremove"))).append(Text.of(" /home remove")).build());
 		}
-		if(src.hasPermission("pjp.cmd.home.list")) {
-			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information ")))
-					.onClick(TextActions.executeCallback(Help.getHelp("hlist"))).append(Text.of(" /home list")).build());
+		if (src.hasPermission("pjp.cmd.home.list")) {
+			list.add(Text.builder().color(TextColors.GREEN).onHover(TextActions.showText(Text.of("Click command for more information "))).onClick(TextActions.executeCallback(Help.getHelp("hlist"))).append(Text.of(" /home list")).build());
 		}
-		pages.contents(list);
-		
-		pages.sendTo(src);
+
+		if (src instanceof Player) {
+			PaginationList.Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
+
+			pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.GREEN, "Command List")).build());
+
+			pages.contents(list);
+
+			pages.sendTo(src);
+		} else {
+			for (Text text : list) {
+				src.sendMessage(text);
+			}
+		}
 
 		return CommandResult.success();
 	}

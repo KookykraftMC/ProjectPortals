@@ -31,26 +31,26 @@ public class CMDCreate implements CommandExecutor {
 		help.setExample(" /home create MyHome");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!(src instanceof Player)) {
+		if (!(src instanceof Player)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Must be a player"));
 			return CommandResult.empty();
 		}
 		Player player = (Player) src;
-		
-		if(!args.hasAny("name")) {
+
+		if (!args.hasAny("name")) {
 			src.sendMessage(Text.of(TextColors.RED, "Usage: /home create <name>"));
 			return CommandResult.empty();
 		}
-		String homeName = args.<String>getOne("name").get().toLowerCase();
-		
+		String homeName = args.<String> getOne("name").get().toLowerCase();
+
 		Map<String, Home> homeList = new HashMap<>();
 
 		Optional<Map<String, Home>> optionalHomeList = player.get(Keys.HOMES);
-		
-		if(optionalHomeList.isPresent()) {
+
+		if (optionalHomeList.isPresent()) {
 			homeList = optionalHomeList.get();
 		}
 
@@ -59,22 +59,22 @@ public class CMDCreate implements CommandExecutor {
 		int amount = homeList.size();
 
 		int extra = 0;
-		for(int i = 1; i <= 100; i++) {
-			if(player.hasPermission("pjp.homes." + i)) {
+		for (int i = 1; i <= 100; i++) {
+			if (player.hasPermission("pjp.homes." + i)) {
 				extra = i;
 				break;
 			}
 		}
-		
-		if(!player.hasPermission("pjp.homes.unlimited")) {
-			if(amount >= (defaultAmount + extra)) {
+
+		if (!player.hasPermission("pjp.homes.unlimited")) {
+			if (amount >= (defaultAmount + extra)) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, "You have reached the maximum number of homes you can have"));
 				return CommandResult.empty();
 			}
 			amount++;
 		}
-		
-		if(homeList.containsKey(homeName)) {
+
+		if (homeList.containsKey(homeName)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, homeName, " already exists."));
 			return CommandResult.empty();
 		}
@@ -82,13 +82,13 @@ public class CMDCreate implements CommandExecutor {
 		Location<World> location = player.getLocation();
 
 		String destination = location.getExtent().getName() + ":" + location.getBlockX() + "." + location.getBlockY() + "." + location.getBlockZ();
-		
+
 		homeList.put(homeName, new Home(destination, Rotation.getClosest(player.getRotation().getFloorY())));
-		
+
 		DataTransactionResult result = player.offer(new HomeData(homeList));
-		if(!result.isSuccessful()) {
+		if (!result.isSuccessful()) {
 			System.out.println("FAILED");
-		}else{
+		} else {
 			player.sendMessage(Text.of(TextColors.DARK_GREEN, "Home ", homeName, " create"));
 		}
 

@@ -14,43 +14,43 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 public abstract class SQLUtils {
 
-    protected static SqlService sql;
+	protected static SqlService sql;
 
-    protected static DataSource getDataSource() throws SQLException {
-	    if (sql == null) {
-	        sql = Main.getGame().getServiceManager().provide(SqlService.class).get();
-	    }
-	    
-	    return sql.getDataSource("jdbc:h2:./config/projectportals/data");
+	protected static DataSource getDataSource() throws SQLException {
+		if (sql == null) {
+			sql = Main.getGame().getServiceManager().provide(SqlService.class).get();
+		}
+
+		return sql.getDataSource("jdbc:h2:./config/projectportals/data");
 	}
 
 	public static void createTables(ConfigurationNode modules) {
-		
+
 		try {
 			Connection connection = getDataSource().getConnection();
 			PreparedStatement statement;
-			
-			if(modules.getNode("portals").getBoolean()) {
+
+			if (modules.getNode("portals").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Portals (Name TEXT, Portal TEXT)");
 				statement.executeUpdate();
 			}
-			if(modules.getNode("buttons").getBoolean()) {
+			if (modules.getNode("buttons").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Buttons (Name TEXT, Button TEXT)");
 				statement.executeUpdate();
 			}
-			if(modules.getNode("doors").getBoolean()) {
+			if (modules.getNode("doors").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Doors (Name TEXT, Door TEXT)");
 				statement.executeUpdate();
 			}
-			if(modules.getNode("levers").getBoolean()) {
+			if (modules.getNode("levers").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Levers (Name TEXT, Lever TEXT)");
 				statement.executeUpdate();
 			}
-			if(modules.getNode("plates").getBoolean()) {
+			if (modules.getNode("plates").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Plates (Name TEXT, Plate TEXT)");
 				statement.executeUpdate();
 			}
-			if(modules.getNode("warps").getBoolean()) {
+			if (modules.getNode("warps").getBoolean()) {
 				statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS Warps (Name TEXT, Warp TEXT)");
 				statement.executeUpdate();
 			}
@@ -58,6 +58,6 @@ public abstract class SQLUtils {
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		}
 	}
 }

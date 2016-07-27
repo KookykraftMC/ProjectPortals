@@ -21,18 +21,18 @@ public class CMDRemove implements CommandExecutor {
 		help.setExample(" /warp remove OldSpawn");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!args.hasAny("name")) {
+		if (!args.hasAny("name")) {
 			src.sendMessage(Text.of(TextColors.YELLOW, "/home remove <name>"));
 			return CommandResult.empty();
 		}
-		String name = args.<String>getOne("name").get().toLowerCase();
-		
+		String name = args.<String> getOne("name").get().toLowerCase();
+
 		Optional<Warp> optionalWarp = Warp.get(name);
-		
-		if(!optionalWarp.isPresent()) {
+
+		if (!optionalWarp.isPresent()) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, name, " does not exist"));
 			return CommandResult.empty();
 		}

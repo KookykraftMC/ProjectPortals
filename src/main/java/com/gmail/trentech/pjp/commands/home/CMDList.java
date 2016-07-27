@@ -35,60 +35,60 @@ public class CMDList implements CommandExecutor {
 		help.setSyntax(" /home list\n /h l");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!(src instanceof Player)) {
+		if (!(src instanceof Player)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Must be a player"));
 			return CommandResult.empty();
 		}
 		Player player = (Player) src;
-		
-		PaginationList.Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
-		
-		pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.AQUA, "Homes")).build());
-		
+
 		Map<String, Home> homeList = new HashMap<>();
 
 		Optional<Map<String, Home>> optionalHomeList = player.get(Keys.HOMES);
-		
-		if(optionalHomeList.isPresent()) {
+
+		if (optionalHomeList.isPresent()) {
 			homeList = optionalHomeList.get();
-		}else{
+		} else {
 			player.offer(new HomeData(new HashMap<String, Home>()));
 		}
-		
+
 		List<Text> list = new ArrayList<>();
 
-		for(Entry<String, Home> entry : homeList.entrySet()) {
+		for (Entry<String, Home> entry : homeList.entrySet()) {
 			String homeName = entry.getKey().toString();
 			Home home = entry.getValue();
-			
+
 			Builder builder = Text.builder().color(TextColors.AQUA).onHover(TextActions.showText(Text.of(TextColors.WHITE, "Click to remove home")));
-			
+
 			Optional<Location<World>> optionalDestination = home.getDestination();
-			if(optionalDestination.isPresent()) {
+			if (optionalDestination.isPresent()) {
 				Location<World> destination = optionalDestination.get();
-				
+
 				String worldName = destination.getExtent().getName();
 				int x = destination.getBlockX();
 				int y = destination.getBlockY();
 				int z = destination.getBlockZ();
-				
-				builder.onClick(TextActions.runCommand("/home remove " + homeName)).append(Text.of(TextColors.AQUA, homeName, ": ", TextColors.GREEN, worldName,", ", x, ", ", y, ", ", z));
-			}else{
+
+				builder.onClick(TextActions.runCommand("/home remove " + homeName)).append(Text.of(TextColors.AQUA, homeName, ": ", TextColors.GREEN, worldName, ", ", x, ", ", y, ", ", z));
+			} else {
 				builder.onClick(TextActions.runCommand("/home remove " + homeName)).append(Text.of(TextColors.AQUA, homeName, ": ", TextColors.RED, "INVALID DESTINATION"));
 			}
 
 			list.add(builder.build());
 		}
 
-		if(list.isEmpty()) {
+		if (list.isEmpty()) {
 			list.add(Text.of(TextColors.YELLOW, " No saved homes"));
 		}
-		
+
+		PaginationList.Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
+
+		pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.GREEN, "Homes")).build());
+
 		pages.contents(list);
-		
+
 		pages.sendTo(src);
 
 		return CommandResult.success();

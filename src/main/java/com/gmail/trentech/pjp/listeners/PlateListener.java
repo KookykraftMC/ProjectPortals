@@ -32,144 +32,165 @@ import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 
-import flavor.pie.spongee.Spongee;
+import flavor.pie.spongycord.SpongyCord;
 
 public class PlateListener {
 
 	public static ConcurrentHashMap<UUID, Plate> builders = new ConcurrentHashMap<>();
 
+	private Timings timings;
+
+	public PlateListener(Timings timings) {
+		this.timings = timings;
+	}
+
 	@Listener
-	public void onChangeBlockEvent(ChangeBlockEvent.Modify event, @First Player player) {
-		for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-			BlockSnapshot snapshot = transaction.getFinal();
-			BlockState block = snapshot.getExtendedState();
-			BlockType blockType = block.getType();
-			
-			if(!blockType.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.LIGHT_WEIGHTED_PRESSURE_PLATE) 
-					&& !blockType.equals(BlockTypes.STONE_PRESSURE_PLATE) && !blockType.equals(BlockTypes.WOODEN_PRESSURE_PLATE)) {
-				continue;
-			}
+	public void onChangeBlockEventModify(ChangeBlockEvent.Modify event, @First Player player) {
+		timings.onChangeBlockEventModify().startTiming();
 
-			if(!block.get(Keys.POWERED).isPresent()) {
-				continue;
-			}
+		try {
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				BlockSnapshot snapshot = transaction.getFinal();
+				BlockState block = snapshot.getExtendedState();
+				BlockType blockType = block.getType();
 
-			if(!block.get(Keys.POWERED).get()) {
-				continue;
-			}
-
-			Location<World> location = snapshot.getLocation().get();		
-
-			Optional<Plate> optionalPlate = Plate.get(location);
-			
-			if(!optionalPlate.isPresent()) {
-				continue;
-			}
-			Plate plate = optionalPlate.get();
-			
-			if(new ConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
-				if(!player.hasPermission("pjp.plate." + location.getExtent().getName() + "_" + location.getBlockX() + "_" + location.getBlockY() + "_" + location.getBlockZ())) {
-					player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to use this pressure plate portal"));
-					event.setCancelled(true);
-					return;
-				}
-			}else{
-				if(!player.hasPermission("pjp.plate.interact")) {
-					player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to interact with pressure plate portals"));
-					event.setCancelled(true);
-					return;
-				}
-			}
-			
-			if(plate.isBungee()) {
-				Consumer<String> consumer = (server) -> {
-					Server teleportEvent = new TeleportEvent.Server(player, server, plate.getServer(), plate.getPrice(), Cause.of(NamedCause.source(plate)));
-
-					if(!Main.getGame().getEventManager().post(teleportEvent)) {
-						Spongee.API.connectPlayer(player, teleportEvent.getDestination());
-						
-						player.setLocation(player.getWorld().getSpawnLocation());
-					}
-				};
-					
-				Spongee.API.getServerName(consumer, player);
-			}else {
-				Optional<Location<World>> optionalSpawnLocation = plate.getDestination();
-				
-				if(!optionalSpawnLocation.isPresent()) {
-					player.sendMessage(Text.of(TextColors.DARK_RED, "World does not exist"));
+				if (!blockType.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.LIGHT_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.STONE_PRESSURE_PLATE) && !blockType.equals(BlockTypes.WOODEN_PRESSURE_PLATE)) {
 					continue;
 				}
-				Location<World> spawnLocation = optionalSpawnLocation.get();
 
-				Local teleportEvent = new TeleportEvent.Local(player, player.getLocation(), spawnLocation, plate.getPrice(), Cause.of(NamedCause.source(plate)));
+				if (!block.get(Keys.POWERED).isPresent()) {
+					continue;
+				}
 
-				if(!Main.getGame().getEventManager().post(teleportEvent)) {
-					spawnLocation = teleportEvent.getDestination();
-					
-					Vector3d rotation = plate.getRotation().toVector3d();
+				if (!block.get(Keys.POWERED).get()) {
+					continue;
+				}
 
-					player.setLocationAndRotation(spawnLocation, rotation);
+				Location<World> location = snapshot.getLocation().get();
+
+				Optional<Plate> optionalPlate = Plate.get(location);
+
+				if (!optionalPlate.isPresent()) {
+					continue;
+				}
+				Plate plate = optionalPlate.get();
+
+				if (new ConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
+					if (!player.hasPermission("pjp.plate." + location.getExtent().getName() + "_" + location.getBlockX() + "_" + location.getBlockY() + "_" + location.getBlockZ())) {
+						player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to use this pressure plate portal"));
+						event.setCancelled(true);
+						return;
+					}
+				} else {
+					if (!player.hasPermission("pjp.plate.interact")) {
+						player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to interact with pressure plate portals"));
+						event.setCancelled(true);
+						return;
+					}
+				}
+
+				if (plate.isBungee()) {
+					Consumer<String> consumer = (server) -> {
+						Server teleportEvent = new TeleportEvent.Server(player, server, plate.getServer(), plate.getPrice(), Cause.of(NamedCause.source(plate)));
+
+						if (!Main.getGame().getEventManager().post(teleportEvent)) {
+							SpongyCord.API.connectPlayer(player, teleportEvent.getDestination());
+
+							player.setLocation(player.getWorld().getSpawnLocation());
+						}
+					};
+
+					SpongyCord.API.getServerName(consumer, player);
+				} else {
+					Optional<Location<World>> optionalSpawnLocation = plate.getDestination();
+
+					if (!optionalSpawnLocation.isPresent()) {
+						player.sendMessage(Text.of(TextColors.DARK_RED, "World does not exist"));
+						continue;
+					}
+					Location<World> spawnLocation = optionalSpawnLocation.get();
+
+					Local teleportEvent = new TeleportEvent.Local(player, player.getLocation(), spawnLocation, plate.getPrice(), Cause.of(NamedCause.source(plate)));
+
+					if (!Main.getGame().getEventManager().post(teleportEvent)) {
+						spawnLocation = teleportEvent.getDestination();
+
+						Vector3d rotation = plate.getRotation().toVector3d();
+
+						player.setLocationAndRotation(spawnLocation, rotation);
+					}
 				}
 			}
+		} finally {
+			timings.onChangeBlockEventModify().stopTiming();
 		}
 	}
 
 	@Listener
-	public void onChangeBlockEvent(ChangeBlockEvent.Break event, @First Player player) {
-		for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-			Location<World> location = transaction.getFinal().getLocation().get();		
+	public void onChangeBlockEventBreak(ChangeBlockEvent.Break event, @First Player player) {
+		timings.onChangeBlockEventBreak().startTiming();
 
-			Optional<Plate> optionalPlate = Plate.get(location);
-			
-			if(!optionalPlate.isPresent()) {
-				continue;
+		try {
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				Location<World> location = transaction.getFinal().getLocation().get();
+
+				Optional<Plate> optionalPlate = Plate.get(location);
+
+				if (!optionalPlate.isPresent()) {
+					continue;
+				}
+				Plate plate = optionalPlate.get();
+
+				if (!player.hasPermission("pjp.plate.break")) {
+					player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to break pressure plate portals"));
+					event.setCancelled(true);
+				} else {
+					plate.remove();
+					player.sendMessage(Text.of(TextColors.DARK_GREEN, "Broke pressure plate portal"));
+				}
 			}
-			Plate plate = optionalPlate.get();
-			
-			if(!player.hasPermission("pjp.plate.break")) {
-				player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to break pressure plate portals"));
-				event.setCancelled(true);
-			}else{
-				plate.remove();
-				player.sendMessage(Text.of(TextColors.DARK_GREEN, "Broke pressure plate portal"));
-			}
+		} finally {
+			timings.onChangeBlockEventBreak().stopTiming();
 		}
-		return;
 	}
 
 	@Listener
-	public void onChangeBlockEvent(ChangeBlockEvent.Place event, @First Player player) {
-		if(!builders.containsKey(player.getUniqueId())) {
-			return;
-		}
+	public void onChangeBlockEventPlace(ChangeBlockEvent.Place event, @First Player player) {
+		timings.onChangeBlockEventPlace().startTiming();
 
-		for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-			BlockType blockType = transaction.getFinal().getState().getType();
-			
-			if(!blockType.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.LIGHT_WEIGHTED_PRESSURE_PLATE) 
-					&& !blockType.equals(BlockTypes.STONE_PRESSURE_PLATE) && !blockType.equals(BlockTypes.WOODEN_PRESSURE_PLATE)) {
-				continue;
+		try {
+			if (!builders.containsKey(player.getUniqueId())) {
+				return;
 			}
 
-			Location<World> location = transaction.getFinal().getLocation().get();
+			for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+				BlockType blockType = transaction.getFinal().getState().getType();
 
-			if(!player.hasPermission("pjp.plate.place")) {
-	        	player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to place pressure plate portals"));
-	        	builders.remove(player.getUniqueId());
-	        	return;
+				if (!blockType.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.LIGHT_WEIGHTED_PRESSURE_PLATE) && !blockType.equals(BlockTypes.STONE_PRESSURE_PLATE) && !blockType.equals(BlockTypes.WOODEN_PRESSURE_PLATE)) {
+					continue;
+				}
+
+				Location<World> location = transaction.getFinal().getLocation().get();
+
+				if (!player.hasPermission("pjp.plate.place")) {
+					player.sendMessage(Text.of(TextColors.DARK_RED, "you do not have permission to place pressure plate portals"));
+					builders.remove(player.getUniqueId());
+					return;
+				}
+
+				Plate plate = builders.get(player.getUniqueId());
+				plate.setLocation(location);
+				plate.create();
+
+				Particle particle = Particles.getDefaultEffect("creation");
+				particle.spawnParticle(location, false, Particles.getDefaultColor("creation", particle.isColorable()));
+
+				player.sendMessage(Text.of(TextColors.DARK_GREEN, "New pressure plate portal created"));
+
+				builders.remove(player.getUniqueId());
 			}
-
-			Plate plate = builders.get(player.getUniqueId());
-			plate.setLocation(location);
-			plate.create();
-
-			Particle particle = Particles.getDefaultEffect("creation");
-			particle.spawnParticle(location, false, Particles.getDefaultColor("creation", particle.isColorable()));
-
-            player.sendMessage(Text.of(TextColors.DARK_GREEN, "New pressure plate portal created"));
-            
-            builders.remove(player.getUniqueId());
+		} finally {
+			timings.onChangeBlockEventPlace().stopTiming();
 		}
 	}
 }

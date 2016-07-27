@@ -15,7 +15,7 @@ import com.gmail.trentech.pjp.utils.SQLUtils;
 import com.gmail.trentech.pjp.utils.Utils;
 
 public class PortalBase extends SQLUtils implements DataSerializable {
-	
+
 	protected String name;
 	protected String destination;
 	protected Rotation rotation;
@@ -36,47 +36,47 @@ public class PortalBase extends SQLUtils implements DataSerializable {
 		this.price = price;
 		this.bungee = bungee;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	protected void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public Optional<Location<World>> getLocation() {
 		String[] args = name.split(":");
-		
+
 		Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
-		
-		if(!optionalWorld.isPresent()) {
+
+		if (!optionalWorld.isPresent()) {
 			return Optional.empty();
 		}
 		World world = optionalWorld.get();
 
 		String[] coords = args[1].split("\\.");
-		
+
 		int x = Integer.parseInt(coords[0]);
 		int y = Integer.parseInt(coords[1]);
 		int z = Integer.parseInt(coords[2]);
-		
-		return Optional.of(world.getLocation(x, y, z));	
+
+		return Optional.of(world.getLocation(x, y, z));
 	}
-	
+
 	public void setLocation(Location<World> location) {
 		String name = location.getExtent().getName() + ":" + location.getBlockX() + "." + location.getBlockY() + "." + location.getBlockZ();
 		this.name = name;
 	}
-	
+
 	public double getPrice() {
 		return price;
 	}
-	
+
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	
+
 	public Rotation getRotation() {
 		return rotation;
 	}
@@ -84,31 +84,32 @@ public class PortalBase extends SQLUtils implements DataSerializable {
 	public void setRotation(Rotation rotation) {
 		this.rotation = rotation;
 	}
-	
+
 	public Optional<Location<World>> getDestination() {
 		String[] args = destination.split(":");
-		
+
 		Optional<World> optionalWorld = Main.getGame().getServer().getWorld(args[0]);
-		
-		if(!optionalWorld.isPresent()) {
+
+		if (!optionalWorld.isPresent()) {
 			return Optional.empty();
 		}
 		World world = optionalWorld.get();
-		
-		if(args[1].equalsIgnoreCase("random")) {
+
+		if (args[1].equalsIgnoreCase("random")) {
 			return Optional.of(Utils.getRandomLocation(world));
-		}else if(args[1].equalsIgnoreCase("spawn")) {
+		} else if (args[1].equalsIgnoreCase("spawn")) {
 			return Optional.of(world.getSpawnLocation());
-		}else{
+		} else {
 			String[] coords = args[1].split("\\.");
+
 			int x = Integer.parseInt(coords[0]);
 			int y = Integer.parseInt(coords[1]);
 			int z = Integer.parseInt(coords[2]);
-			
-			return Optional.of(world.getLocation(x, y, z));	
+
+			return Optional.of(world.getLocation(x, y, z));
 		}
 	}
-	
+
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
@@ -116,19 +117,19 @@ public class PortalBase extends SQLUtils implements DataSerializable {
 	public boolean isBungee() {
 		return bungee;
 	}
-	
+
 	public String getServer() {
 		return destination;
 	}
-	
+
 	@Override
 	public int getContentVersion() {
 		return 1;
 	}
 
 	@Override
-    public DataContainer toContainer() {
-        return new MemoryDataContainer().set(DataQueries.DESTINATION, destination).set(DataQueries.ROTATION, rotation.getName()).set(DataQueries.PRICE, price).set(DataQueries.BUNGEE, bungee);
-    }
+	public DataContainer toContainer() {
+		return new MemoryDataContainer().set(DataQueries.DESTINATION, destination).set(DataQueries.ROTATION, rotation.getName()).set(DataQueries.PRICE, price).set(DataQueries.BUNGEE, bungee);
+	}
 
 }

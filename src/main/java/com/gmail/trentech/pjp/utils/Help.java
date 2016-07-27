@@ -6,7 +6,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.service.pagination.PaginationList.Builder;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -20,9 +21,9 @@ public class Help {
 	private final String description;
 	private Optional<String> syntax = Optional.empty();
 	private Optional<String> example = Optional.empty();
-	
+
 	private static List<Help> list = new ArrayList<>();
-	
+
 	public Help(String id, String command, String description) {
 		this.id = id;
 		this.command = command;
@@ -32,7 +33,7 @@ public class Help {
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -60,35 +61,43 @@ public class Help {
 	public void save() {
 		list.add(this);
 	}
-	
+
 	public static Consumer<CommandSource> getHelp(String input) {
 		return (CommandSource src) -> {
-			for(Help help : list) {
-				if(help.getId().equalsIgnoreCase(input)) {
-					Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
-					pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.GREEN, help.getCommand().toLowerCase())).build());
-					
+			for (Help help : list) {
+				if (help.getId().equalsIgnoreCase(input)) {
 					List<Text> list = new ArrayList<>();
 
 					list.add(Text.of(TextColors.GREEN, "Description:"));
 					list.add(Text.of(TextColors.WHITE, help.getDescription()));
-					
-					if(help.getSyntax().isPresent()) {
+
+					if (help.getSyntax().isPresent()) {
 						list.add(Text.of(TextColors.GREEN, "Syntax:"));
 						list.add(Text.of(TextColors.WHITE, help.getSyntax().get()));
 					}
-					if(help.getExample().isPresent()) {
+					if (help.getExample().isPresent()) {
 						list.add(Text.of(TextColors.GREEN, "Example:"));
-						list.add(Text.of(TextColors.WHITE,  help.getExample().get(), TextColors.DARK_GREEN));
+						list.add(Text.of(TextColors.WHITE, help.getExample().get(), TextColors.DARK_GREEN));
 					}
-					
-					pages.contents(list);
-					
-					pages.sendTo(src);
+
+					if (src instanceof Player) {
+						PaginationList.Builder pages = Main.getGame().getServiceManager().provide(PaginationService.class).get().builder();
+
+						pages.title(Text.builder().color(TextColors.DARK_GREEN).append(Text.of(TextColors.GREEN, help.getCommand().toLowerCase())).build());
+
+						pages.contents(list);
+
+						pages.sendTo(src);
+					} else {
+						for (Text text : list) {
+							src.sendMessage(text);
+						}
+					}
+
 					break;
-				}	
+				}
 			}
-			
+
 		};
 	}
 }

@@ -25,17 +25,17 @@ public class Serializer {
 
 	public static String serialize(Warp warp) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(warp.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Warp deserializeWarp(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -43,28 +43,28 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Warp.class, dataView).get();
+
+		return manager.deserialize(Warp.class, dataView).get();
 	}
-	
+
 	public static String serialize(Plate plate) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(plate.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Plate deserializePlate(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -72,28 +72,28 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Plate.class, dataView).get();
+
+		return manager.deserialize(Plate.class, dataView).get();
 	}
-	
+
 	public static String serialize(Lever lever) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(lever.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Lever deserializeLever(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -101,28 +101,28 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Lever.class, dataView).get();
+
+		return manager.deserialize(Lever.class, dataView).get();
 	}
-	
+
 	public static String serialize(Door door) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(door.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Door deserializeDoor(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -130,28 +130,28 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Door.class, dataView).get();
+
+		return manager.deserialize(Door.class, dataView).get();
 	}
-	
+
 	public static String serialize(Button button) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(button.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Button deserializeButton(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -159,28 +159,28 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Button.class, dataView).get();
+
+		return manager.deserialize(Button.class, dataView).get();
 	}
-	
+
 	public static String serialize(Portal portal) {
 		ConfigurationNode node = ConfigurateTranslator.instance().translateData(portal.toContainer());
-		
+
 		StringWriter stringWriter = new StringWriter();
 		try {
-		    HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
+			HoconConfigurationLoader.builder().setSink(() -> new BufferedWriter(stringWriter)).build().save(node);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return stringWriter.toString();
 	}
-	
+
 	public static Portal deserializePortal(String item) {
 		ConfigurationNode node = null;
 		try {
@@ -188,12 +188,12 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	    ConfigurateTranslator translator = ConfigurateTranslator.instance();
-	    DataManager manager = Main.getGame().getDataManager();
+
+		ConfigurateTranslator translator = ConfigurateTranslator.instance();
+		DataManager manager = Main.getGame().getDataManager();
 
 		DataView dataView = translator.translateFrom(node);
-		
-	    return manager.deserialize(Portal.class, dataView).get();
+
+		return manager.deserialize(Portal.class, dataView).get();
 	}
 }

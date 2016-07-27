@@ -15,40 +15,40 @@ import com.gmail.trentech.pjp.data.object.Sign;
 
 public class ImmutableSignPortalData extends AbstractImmutableSingleData<Sign, ImmutableSignPortalData, SignPortalData> {
 
-    public ImmutableSignPortalData(Sign value) {
-        super(value, SIGN);
-    }
+	public ImmutableSignPortalData(Sign value) {
+		super(value, SIGN);
+	}
 
-    public ImmutableValue<Sign> sign() {
-        return Sponge.getRegistry().getValueFactory().createValue(SIGN, getValue(), getValue()).asImmutable();
-    }
-    
-    @Override
-    public <E> Optional<ImmutableSignPortalData> with(Key<? extends BaseValue<E>> key, E value) {
-        if (this.supports(key)) {
-            return Optional.of(asMutable().set(key, value).asImmutable());
-        } else {
-            return Optional.empty();
-        }
-    }
+	public ImmutableValue<Sign> sign() {
+		return Sponge.getRegistry().getValueFactory().createValue(SIGN, getValue(), getValue()).asImmutable();
+	}
 
-    @Override
-    public int compareTo(ImmutableSignPortalData arg0) {
-        return 0;
-    }
+	@Override
+	public <E> Optional<ImmutableSignPortalData> with(Key<? extends BaseValue<E>> key, E value) {
+		if (this.supports(key)) {
+			return Optional.of(asMutable().set(key, value).asImmutable());
+		} else {
+			return Optional.empty();
+		}
+	}
 
-    @Override
-    public int getContentVersion() {
-        return 1;
-    }
+	@Override
+	public int compareTo(ImmutableSignPortalData arg0) {
+		return 0;
+	}
 
-    @Override
-    protected ImmutableValue<?> getValueGetter() {
-        return Sponge.getRegistry().getValueFactory().createValue(SIGN, getValue()).asImmutable();
-    }
+	@Override
+	public int getContentVersion() {
+		return 1;
+	}
 
-    @Override
-    public SignPortalData asMutable() {
-        return new SignPortalData(this.getValue());
-    }
+	@Override
+	protected ImmutableValue<?> getValueGetter() {
+		return Sponge.getRegistry().getValueFactory().createValue(SIGN, getValue()).asImmutable();
+	}
+
+	@Override
+	public SignPortalData asMutable() {
+		return new SignPortalData(this.getValue());
+	}
 }

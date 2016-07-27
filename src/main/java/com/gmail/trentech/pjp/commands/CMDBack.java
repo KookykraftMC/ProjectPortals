@@ -24,24 +24,24 @@ import com.gmail.trentech.pjp.utils.Help;
 public class CMDBack implements CommandExecutor {
 
 	public CommandSpec cmdBack = CommandSpec.builder().description(Text.of("Send player to last place they were")).permission("pjp.cmd.back").executor(this).build();
-	
+
 	public static ConcurrentHashMap<Player, Location<World>> players = new ConcurrentHashMap<>();
-	
-	public CMDBack(){
+
+	public CMDBack() {
 		Help help = new Help("back", "back", " Use this command to teleport you to the location you previously came from");
 		help.setSyntax(" /back");
 		help.save();
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if(!(src instanceof Player)){
+		if (!(src instanceof Player)) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Must be a player"));
 			return CommandResult.empty();
 		}
 		Player player = (Player) src;
 
-		if(players.get(player) == null){
+		if (players.get(player) == null) {
 			src.sendMessage(Text.of(TextColors.DARK_RED, "No position to teleport to"));
 			return CommandResult.empty();
 		}
@@ -49,7 +49,7 @@ public class CMDBack implements CommandExecutor {
 
 		Local teleportEvent = new TeleportEvent.Local(player, player.getLocation(), spawnLocation, 0, Cause.of(NamedCause.source("back")));
 
-		if(!Main.getGame().getEventManager().post(teleportEvent)){
+		if (!Main.getGame().getEventManager().post(teleportEvent)) {
 			spawnLocation = teleportEvent.getDestination();
 			player.setLocation(spawnLocation);
 		}

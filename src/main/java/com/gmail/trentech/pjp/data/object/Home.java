@@ -13,7 +13,7 @@ public class Home extends PortalBase {
 	}
 
 	@Override
-    public DataContainer toContainer() {
-        return new MemoryDataContainer().set(DataQueries.DESTINATION, destination).set(DataQueries.ROTATION, rotation.getName());
-    }
+	public DataContainer toContainer() {
+		return new MemoryDataContainer().set(DataQueries.DESTINATION, destination).set(DataQueries.ROTATION, rotation.getName());
+	}
 }

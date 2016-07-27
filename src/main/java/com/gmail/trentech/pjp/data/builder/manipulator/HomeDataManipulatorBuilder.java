@@ -18,30 +18,30 @@ import com.gmail.trentech.pjp.data.object.Home;
 public class HomeDataManipulatorBuilder implements DataManipulatorBuilder<HomeData, ImmutableHomeData> {
 
 	@Override
-    public Optional<HomeData> build(DataView container) throws InvalidDataException {
-        if (!container.contains(HOMES)) {
-            return Optional.empty();
-        }
-        
-        HashMap<String, Home> homeList = new HashMap<>();
-        
-        DataView homes = container.getView(HOMES.getQuery()).get();
-        
-        for(DataQuery home : homes.getKeys(false)) {
-        	homeList.put(home.toString(), homes.getSerializable(home, Home.class).get());
-        }
+	public Optional<HomeData> build(DataView container) throws InvalidDataException {
+		if (!container.contains(HOMES)) {
+			return Optional.empty();
+		}
 
-        return Optional.of(new HomeData(homeList));
-    }
+		HashMap<String, Home> homeList = new HashMap<>();
 
-    @Override
-    public HomeData create() {
-        return new HomeData(new HashMap<String, Home>());
-    }
+		DataView homes = container.getView(HOMES.getQuery()).get();
 
-    @Override
-    public Optional<HomeData> createFrom(DataHolder dataHolder) {
-        return create().fill(dataHolder);
-    }
+		for (DataQuery home : homes.getKeys(false)) {
+			homeList.put(home.toString(), homes.getSerializable(home, Home.class).get());
+		}
+
+		return Optional.of(new HomeData(homeList));
+	}
+
+	@Override
+	public HomeData create() {
+		return new HomeData(new HashMap<String, Home>());
+	}
+
+	@Override
+	public Optional<HomeData> createFrom(DataHolder dataHolder) {
+		return create().fill(dataHolder);
+	}
 
 }

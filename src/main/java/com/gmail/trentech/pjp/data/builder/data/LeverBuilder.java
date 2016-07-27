@@ -16,21 +16,21 @@ import com.gmail.trentech.pjp.utils.Rotation;
 
 public class LeverBuilder extends AbstractDataBuilder<Lever> {
 
-    public LeverBuilder() {
-        super(Lever.class, 1);
-    }
+	public LeverBuilder() {
+		super(Lever.class, 1);
+	}
 
-    @Override
-    protected Optional<Lever> buildContent(DataView container) throws InvalidDataException {
-        if (container.contains(DESTINATION, ROTATION, PRICE, BUNGEE)) {
-        	String destination = container.getString(DESTINATION).get();
-        	String rotation = container.getString(ROTATION).get();
-        	Double price = container.getDouble(PRICE).get();
-        	boolean bungee = container.getBoolean(BUNGEE).get();
-        	
-            return Optional.of(new Lever(destination, Rotation.get(rotation).get(), price, bungee));
-        }
-        
-        return Optional.empty();
-    }
+	@Override
+	protected Optional<Lever> buildContent(DataView container) throws InvalidDataException {
+		if (container.contains(DESTINATION, ROTATION, PRICE, BUNGEE)) {
+			String destination = container.getString(DESTINATION).get();
+			String rotation = container.getString(ROTATION).get();
+			Double price = container.getDouble(PRICE).get();
+			boolean bungee = container.getBoolean(BUNGEE).get();
+
+			return Optional.of(new Lever(destination, Rotation.get(rotation).get(), price, bungee));
+		}
+
+		return Optional.empty();
+	}
 }
