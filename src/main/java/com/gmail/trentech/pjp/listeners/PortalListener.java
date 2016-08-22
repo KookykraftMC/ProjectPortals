@@ -40,7 +40,6 @@ import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.portal.PortalProperties;
-import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.PlayerDirection;
 import com.gmail.trentech.pjp.utils.Rotation;
 
@@ -225,7 +224,7 @@ public class PortalListener {
 				}
 			}
 
-			ConfigurationNode config = new ConfigManager().getConfig();
+			ConfigurationNode config = Main.getConfigManager().getConfig();
 
 			int size = config.getNode("options", "portal", "size").getInt();
 			if (locations.size() > size) {
@@ -268,7 +267,7 @@ public class PortalListener {
 				return;
 			}
 
-			if (!new ConfigManager().getConfig().getNode("options", "portal", "teleport_item").getBoolean()) {
+			if (!Main.getConfigManager().getConfig().getNode("options", "portal", "teleport_item").getBoolean()) {
 				return;
 			}
 
@@ -309,7 +308,7 @@ public class PortalListener {
 				return;
 			}
 
-			if (!new ConfigManager().getConfig().getNode("options", "portal", "teleport_mob").getBoolean()) {
+			if (!Main.getConfigManager().getConfig().getNode("options", "portal", "teleport_mob").getBoolean()) {
 				return;
 			}
 
@@ -349,7 +348,7 @@ public class PortalListener {
 			}
 			Portal portal = optionalPortal.get();
 
-			if (new ConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
+			if (Main.getConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
 				if (!player.hasPermission("pjp.portal." + portal.getName())) {
 					player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to use this portal"));
 					return;

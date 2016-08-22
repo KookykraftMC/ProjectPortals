@@ -34,7 +34,6 @@ import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
-import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.Rotation;
 
 import flavor.pie.spongycord.SpongyCord;
@@ -118,7 +117,7 @@ public class ButtonListener {
 
 				Button button = optionalButton.get();
 
-				if (new ConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
+				if (Main.getConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
 					if (!player.hasPermission("pjp.button." + location.getExtent().getName() + "_" + location.getBlockX() + "_" + location.getBlockY() + "_" + location.getBlockZ())) {
 						player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to use this button portal"));
 						event.setCancelled(true);

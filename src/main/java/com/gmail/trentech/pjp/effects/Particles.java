@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 
 import com.gmail.trentech.pjp.Main;
-import com.gmail.trentech.pjp.utils.ConfigManager;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -58,7 +57,7 @@ public enum Particles {
 	}
 
 	public static Particle getDefaultEffect(String key) {
-		ConfigurationNode node = new ConfigManager().getConfig().getNode("options", "particles", key);
+		ConfigurationNode node = Main.getConfigManager().getConfig().getNode("options", "particles", key);
 
 		if (node.isVirtual()) {
 			Main.getLog().warn("Can't find config node for " + key);
@@ -82,7 +81,7 @@ public enum Particles {
 			return Optional.empty();
 		}
 
-		ConfigurationNode node = new ConfigManager().getConfig().getNode("options", "particles", key);
+		ConfigurationNode node = Main.getConfigManager().getConfig().getNode("options", "particles", key);
 
 		if (node.isVirtual()) {
 			Main.getLog().warn("Can't find config node for " + key);
