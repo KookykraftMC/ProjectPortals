@@ -12,7 +12,7 @@ import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.data.DataQueries;
 import com.gmail.trentech.pjp.utils.Rotation;
 import com.gmail.trentech.pjp.utils.SQLUtils;
-import com.gmail.trentech.pjp.utils.Utils;
+import com.gmail.trentech.pjp.utils.Teleport;
 
 public class PortalBase extends SQLUtils implements DataSerializable {
 
@@ -96,7 +96,7 @@ public class PortalBase extends SQLUtils implements DataSerializable {
 		World world = optionalWorld.get();
 
 		if (args[1].equalsIgnoreCase("random")) {
-			return Optional.of(Utils.getRandomLocation(world));
+			return Optional.of(Teleport.getRandomLocation(world));
 		} else if (args[1].equalsIgnoreCase("spawn")) {
 			return Optional.of(world.getSpawnLocation());
 		} else {

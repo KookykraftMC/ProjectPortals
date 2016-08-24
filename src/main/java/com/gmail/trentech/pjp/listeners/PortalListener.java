@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
@@ -18,6 +19,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.type.Exclude;
@@ -26,17 +28,20 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.gmail.trentech.pjp.Main;
 import com.gmail.trentech.pjp.data.object.Portal;
+import com.gmail.trentech.pjp.effects.ParticleColor;
+import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.ConstructPortalEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent;
 import com.gmail.trentech.pjp.events.TeleportEvent.Local;
 import com.gmail.trentech.pjp.events.TeleportEvent.Server;
 import com.gmail.trentech.pjp.portal.PortalProperties;
-import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.PlayerDirection;
+import com.gmail.trentech.pjp.utils.Rotation;
 
 import flavor.pie.spongycord.SpongyCord;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -50,7 +55,118 @@ public class PortalListener {
 	public PortalListener(Timings timings) {
 		this.timings = timings;
 	}
+	
+	@Listener
+	public void onTabCompleteEvent(TabCompleteEvent event, @First Player player) {
+		String rawMessage = event.getRawMessage();
+		
+		String[] args = rawMessage.split(" ");
+		
+		if(args.length <= 1) {
+			return;
+		}
 
+		if(!args[0].equalsIgnoreCase("portal") && !args[0].equalsIgnoreCase("p")) {
+			return;
+		}
+		
+		List<String> list = event.getTabCompletions();
+		
+		if(args[1].equalsIgnoreCase("create") || args[1].equalsIgnoreCase("c")) {
+			if(args[args.length - 1].equalsIgnoreCase("-d") || args[args.length - 2].equalsIgnoreCase("-d")) {
+				for (Rotation rotation : Rotation.values()) {
+					String id = rotation.getName();
+					
+					if(args[args.length - 2].equalsIgnoreCase("-d")) {
+						if(id.contains(args[args.length - 1].toLowerCase()) && !id.equalsIgnoreCase(args[args.length - 1])) {
+							list.add(id);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(id);
+					}
+				}
+			} else if(args[args.length - 1].equalsIgnoreCase("-e") || args[args.length - 2].equalsIgnoreCase("-e")) {
+				for (Particles particle : Particles.values()) {
+					String id = particle.name();
+					
+					if(args[args.length - 2].equalsIgnoreCase("-e")) {
+						if(id.contains(args[args.length - 1].toUpperCase()) && !id.equalsIgnoreCase(args[args.length - 1])) {
+							list.add(id);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(id);
+					}
+				}
+			}
+		} else if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
+			for(WorldProperties world : Sponge.getServer().getAllWorldProperties()) {
+				String name = world.getWorldName();
+				
+				if(args.length == 3) {
+					if(name.contains(args[2].toLowerCase()) && !name.equalsIgnoreCase(args[2])) {
+						list.add(name);
+					}
+				} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+					list.add(name);
+				}
+			}
+		} else if(args[1].equalsIgnoreCase("particle") || args[1].equalsIgnoreCase("p")) {
+			if(args.length == 2 || args.length == 3) {
+				for(WorldProperties world : Sponge.getServer().getAllWorldProperties()) {
+					String name = world.getWorldName();
+					
+					if(args.length == 3) {
+						if(name.contains(args[2].toLowerCase()) && !name.equalsIgnoreCase(args[2])) {
+							list.add(name);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(name);
+					}
+				}
+			}
+			if(args.length == 3 || args.length == 4) {
+				for(Particles particle : Particles.values()) {
+					String name = particle.name();
+					
+					if(args.length == 4) {
+						if(name.contains(args[3].toUpperCase()) && !name.equalsIgnoreCase(args[3])) {
+							list.add(name);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(name);
+					}
+				}
+			}
+			if(args.length == 4 || args.length == 5) {
+				for(ParticleColor color : ParticleColor.values()) {
+					String name = color.getName();
+					
+					if(args.length == 5) {
+						if(name.contains(args[4].toUpperCase()) && !name.equalsIgnoreCase(args[4])) {
+							list.add(name);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(name);
+					}
+				}
+			}
+		} else if(args[1].equalsIgnoreCase("price") || args[1].equalsIgnoreCase("pr")) {
+			if(args.length == 2 || args.length == 3) {
+				for(WorldProperties world : Sponge.getServer().getAllWorldProperties()) {
+					String name = world.getWorldName();
+					
+					if(args.length == 3) {
+						if(name.contains(args[2].toLowerCase()) && !name.equalsIgnoreCase(args[2])) {
+							list.add(name);
+						}
+					} else if(rawMessage.substring(rawMessage.length() - 1).equalsIgnoreCase(" ")){
+						list.add(name);
+					}
+				}
+			}
+		}
+	}
+	
 	@Listener
 	@Exclude(value = { ChangeBlockEvent.Place.class })
 	public void onInteractBlockEventSecondary(InteractBlockEvent.Secondary event, @First Player player) {
@@ -108,7 +224,7 @@ public class PortalListener {
 				}
 			}
 
-			ConfigurationNode config = new ConfigManager().getConfig();
+			ConfigurationNode config = Main.getConfigManager().getConfig();
 
 			int size = config.getNode("options", "portal", "size").getInt();
 			if (locations.size() > size) {
@@ -151,7 +267,7 @@ public class PortalListener {
 				return;
 			}
 
-			if (!new ConfigManager().getConfig().getNode("options", "portal", "teleport_item").getBoolean()) {
+			if (!Main.getConfigManager().getConfig().getNode("options", "portal", "teleport_item").getBoolean()) {
 				return;
 			}
 
@@ -192,7 +308,7 @@ public class PortalListener {
 				return;
 			}
 
-			if (!new ConfigManager().getConfig().getNode("options", "portal", "teleport_mob").getBoolean()) {
+			if (!Main.getConfigManager().getConfig().getNode("options", "portal", "teleport_mob").getBoolean()) {
 				return;
 			}
 
@@ -232,7 +348,7 @@ public class PortalListener {
 			}
 			Portal portal = optionalPortal.get();
 
-			if (new ConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
+			if (Main.getConfigManager().getConfig().getNode("options", "advanced_permissions").getBoolean()) {
 				if (!player.hasPermission("pjp.portal." + portal.getName())) {
 					player.sendMessage(Text.of(TextColors.DARK_RED, "You do not have permission to use this portal"));
 					return;

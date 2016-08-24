@@ -15,28 +15,6 @@ public class ConfigManager {
 	private CommentedConfigurationNode config;
 	private ConfigurationLoader<CommentedConfigurationNode> loader;
 
-	public ConfigManager(String folder, String configName) {
-		folder = "config" + File.separator + "projectportals" + File.separator + folder;
-		if (!new File(folder).isDirectory()) {
-			new File(folder).mkdirs();
-		}
-		file = new File(folder, configName);
-
-		create();
-		load();
-	}
-
-	public ConfigManager(String configName) {
-		String folder = "config" + File.separator + "projectportals";
-		if (!new File(folder).isDirectory()) {
-			new File(folder).mkdirs();
-		}
-		file = new File(folder, configName);
-
-		create();
-		load();
-	}
-
 	public ConfigManager() {
 		String folder = "config" + File.separator + "projectportals";
 		if (!new File(folder).isDirectory()) {
@@ -56,7 +34,7 @@ public class ConfigManager {
 		return config;
 	}
 
-	public void init() {
+	public ConfigManager init() {
 		if (file.getName().equalsIgnoreCase("config.conf")) {
 			if (config.getNode("options", "portal", "size").isVirtual()) {
 				config.getNode("options", "portal", "size").setValue(100).setComment("Maximum number of blocks a portal can use");
@@ -128,6 +106,8 @@ public class ConfigManager {
 			}
 			save();
 		}
+		
+		return this;
 	}
 
 	private void create() {

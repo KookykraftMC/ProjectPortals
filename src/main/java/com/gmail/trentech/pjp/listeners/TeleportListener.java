@@ -32,8 +32,7 @@ import com.gmail.trentech.pjp.commands.CMDBack;
 import com.gmail.trentech.pjp.effects.Particle;
 import com.gmail.trentech.pjp.effects.Particles;
 import com.gmail.trentech.pjp.events.TeleportEvent;
-import com.gmail.trentech.pjp.utils.ConfigManager;
-import com.gmail.trentech.pjp.utils.Utils;
+import com.gmail.trentech.pjp.utils.Teleport;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -102,12 +101,13 @@ public class TeleportListener {
 			Optional<Location<World>> optionalLocation = teleportHelper.getSafeLocation(dest);
 
 			if (!optionalLocation.isPresent()) {
-				player.sendMessage(Text.builder().color(TextColors.DARK_RED).append(Text.of("Unsafe spawn point detected. Teleport anyway? ")).onClick(TextActions.executeCallback(Utils.unsafeTeleport(dest))).append(Text.of(TextColors.GOLD, TextStyles.UNDERLINE, "Click Here")).build());
+				player.sendMessage(Text.builder().color(TextColors.DARK_RED).append(Text.of("Unsafe spawn point detected. Teleport anyway? ")).onClick(TextActions.executeCallback(Teleport.unsafe(dest))).append(Text.of(TextColors.GOLD, TextStyles.UNDERLINE, "Click Here")).build());
 				event.setCancelled(true);
 				return;
 			}
-
-			ConfigurationNode config = new ConfigManager().getConfig();
+			event.setDestination(optionalLocation.get());
+			
+			ConfigurationNode config = Main.getConfigManager().getConfig();
 
 			Text title = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
 			Text subTitle = TextSerializers.FORMATTING_CODE.deserialize(config.getNode("options", "teleport_message", "sub_title").getString().replaceAll("%WORLD%", dest.getExtent().getName()).replaceAll("\\%X%", Integer.toString(dest.getBlockX())).replaceAll("\\%Y%", Integer.toString(dest.getBlockY())).replaceAll("\\%Z%", Integer.toString(dest.getBlockZ())));
