@@ -48,6 +48,7 @@ import com.gmail.trentech.pjp.listeners.SignListener;
 import com.gmail.trentech.pjp.listeners.TeleportListener;
 import com.gmail.trentech.pjp.listeners.Timings;
 import com.gmail.trentech.pjp.listeners.WarpListener;
+import com.gmail.trentech.pjp.listeners.WorldListener;
 import com.gmail.trentech.pjp.utils.ConfigManager;
 import com.gmail.trentech.pjp.utils.Resource;
 import com.gmail.trentech.pjp.utils.SQLUtils;
@@ -80,7 +81,8 @@ public class Main {
 
 		Timings timings = new Timings();
 
-		getGame().getEventManager().registerListeners(this, new TeleportListener(timings));
+		Sponge.getEventManager().registerListeners(this, new TeleportListener(timings));
+		Sponge.getEventManager().registerListeners(this, new WorldListener());
 
 		getGame().getCommandManager().register(this, new CMDBack().cmdBack, "back");
 		getGame().getCommandManager().register(this, new CommandManager().cmdPJP, "pjp");
@@ -195,7 +197,8 @@ public class Main {
 		Timings timings = new Timings();
 
 		Sponge.getEventManager().registerListeners(this, new TeleportListener(timings));
-
+		Sponge.getEventManager().registerListeners(this, new WorldListener());
+		
 		ConfigurationNode modules = configManager.getConfig().getNode("settings", "modules");
 
 		if (modules.getNode("portals").getBoolean()) {
