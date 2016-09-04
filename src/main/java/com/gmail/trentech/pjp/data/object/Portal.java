@@ -107,10 +107,12 @@ public class Portal extends PortalBase {
 	private void updateClient(Player player, boolean reset) {
 		Main.getGame().getScheduler().createTaskBuilder().delayTicks(5).execute(c -> {
 			for (Location<World> location : getFill()) {
-				if (reset) {
-					player.resetBlockChange(location.getBlockPosition());
-				} else {
-					player.sendBlockChange(location.getBlockPosition(), blockState);
+				if(location.getExtent().getChunk(location.getChunkPosition()).get().isLoaded()) {
+					if (reset) {
+						player.resetBlockChange(location.getBlockPosition());
+					} else {
+						player.sendBlockChange(location.getBlockPosition(), blockState);
+					}
 				}
 			}
 		}).submit(Main.getPlugin());
@@ -119,13 +121,7 @@ public class Portal extends PortalBase {
 	public void update(boolean reset) {
 		World world = getFrame().get(0).getExtent();
 
-		Predicate<Entity> filter = new Predicate<Entity>() {
-
-			@Override
-			public boolean test(Entity entity) {
-				return entity.getType().equals(EntityTypes.PLAYER);
-			}
-		};
+		Predicate<Entity> filter = entity -> {return entity.getType().equals(EntityTypes.PLAYER);};
 
 		for (Entity entity : world.getEntities(filter)) {
 			updateClient((Player) entity, reset);
