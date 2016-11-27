@@ -49,11 +49,8 @@ public class Particle {
 			return false;
 		}
 
-		if (getType().getDefaultOption(ParticleOptions.COLOR).isPresent()) {
-			return true;
-		}
+		return getType().getDefaultOption(ParticleOptions.COLOR).isPresent();
 
-		return false;
 	}
 
 	public void spawnParticle(Location<World> location, boolean player, Optional<ParticleColor> color) {

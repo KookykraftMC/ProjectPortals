@@ -14,7 +14,7 @@ public enum PlayerRotation {
 	private final Direction direction;
 	private final int value;
 
-	private PlayerRotation(Direction direction, int value) {
+	PlayerRotation(Direction direction, int value) {
 		this.direction = direction;
 		this.value = value;
 	}

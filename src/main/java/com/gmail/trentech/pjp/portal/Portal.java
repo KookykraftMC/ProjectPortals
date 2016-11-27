@@ -451,16 +451,16 @@ public abstract class Portal extends SQLUtils implements DataSerializable {
 		PLATE,
 		PORTAL,
 		SIGN,
-		WARP;
+		WARP
 	}
 	
 	public static String serialize(Portal portal) {
 		DataContainer container;
 
 		if (portal instanceof Server) {
-			container = ((Server) portal).toContainer();
+			container = portal.toContainer();
 		} else {
-			container = ((Local) portal).toContainer();
+			container = portal.toContainer();
 		}
 
 		ConfigurationNode node = DataTranslators.CONFIGURATION_NODE.translate(container);

@@ -38,7 +38,7 @@ public enum Particles {
 
 	private final Particle particle;
 
-	private Particles(Particle particle) {
+	Particles(Particle particle) {
 		this.particle = particle;
 	}
 
@@ -76,9 +76,8 @@ public enum Particles {
 			Main.instance().getLog().warn("Can't find particle type for " + type);
 			return get("BARRIER").get();
 		}
-		Particle particle = optionalParticle.get();
 
-		return particle;
+		return optionalParticle.get();
 	}
 
 	public static Optional<ParticleColor> getDefaultColor(String key, boolean colorable) {

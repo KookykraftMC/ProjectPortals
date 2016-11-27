@@ -28,7 +28,7 @@ public enum ParticleColor {
 	private final Color color;
 	private final String name;
 
-	private ParticleColor(String name, Color color) {
+	ParticleColor(String name, Color color) {
 		this.name = name;
 		this.color = color;
 	}

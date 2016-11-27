@@ -144,7 +144,7 @@ public class HomeData extends AbstractMappedData<String, Portal, HomeData, Immut
 
 		@Override
 		public HomeData create() {
-			return new HomeData(new HashMap<String, Portal>());
+			return new HomeData(new HashMap<>());
 		}
 
 		@Override
